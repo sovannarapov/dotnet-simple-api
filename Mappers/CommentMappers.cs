@@ -5,35 +5,34 @@ namespace api.Mappers
 {
     public static class CommentMappers
     {
-        public static CommentDto ToCommentDto(this Comment commentModel)
+        public static CommentDto ToCommentDto(this Comment comment)
         {
             return new CommentDto
             {
-                Id = commentModel.Id,
-                Title = commentModel.Title,
-                Content = commentModel.Content,
-                CreatedOn = commentModel.CreatedOn,
-                StockId = commentModel.StockId
+                Id = comment.Id,
+                Title = comment.Title,
+                Content = comment.Content,
+                CreatedOn = comment.CreatedOn,
+                StockId = comment.StockId
             };
         }
 
-        public static Comment ToCommentFromCreateDto(this CreateCommentRequestDto commentDto, int stockId)
+        public static Comment ToCommentFromCreateDto(this CreateCommentRequestDto createCommentRequestDto, int stockId)
         {
             return new Comment
             {
-                Title = commentDto.Title,
-                Content = commentDto.Content,
+                Title = createCommentRequestDto.Title,
+                Content = createCommentRequestDto.Content,
                 StockId = stockId
             };
         }
 
-        public static Comment ToCommentFromUpdateDto(this UpdateCommentRequestDto commentDto, int stockId)
+        public static Comment ToCommentFromUpdateDto(this UpdateCommentRequestDto updateCommentRequestDto)
         {
             return new Comment
             {
-                Title = commentDto.Title,
-                Content = commentDto.Content,
-                StockId = stockId
+                Title = updateCommentRequestDto.Title,
+                Content = updateCommentRequestDto.Content
             };
         }
     }
