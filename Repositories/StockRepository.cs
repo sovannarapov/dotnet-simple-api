@@ -4,7 +4,7 @@ using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Repository
+namespace api.Repositories
 {
     public class StockRepository : IStockRepository
     {
@@ -22,7 +22,9 @@ namespace api.Repository
 
         public async Task<Stock?> GetByIdAsync(int id)
         {
-            return await _context.Stocks.FindAsync(id);
+            return await _context.Stocks
+                .Include(stock => stock.Comments)
+                .FirstOrDefaultAsync(stock => stock.Id == id);
         }
 
         public Task<bool> StockExists(int id)
@@ -30,17 +32,17 @@ namespace api.Repository
             return _context.Stocks.AnyAsync(stock => stock.Id == id);
         }
 
-        public async Task<Stock> CreateAsync(Stock stockModel)
+        public async Task<Stock> CreateAsync(Stock stock)
         {
-            await _context.Stocks.AddAsync(stockModel);
+            await _context.Stocks.AddAsync(stock);
             await _context.SaveChangesAsync();
 
-            return stockModel;
+            return stock;
         }
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto updateDto)
         {
-            var existingStock = await _context.Stocks.FindAsync(id);
+            var existingStock = await _context.Stocks.FirstOrDefaultAsync(stock => stock.Id == id);
 
             if (existingStock == null)
             {
@@ -55,8 +57,6 @@ namespace api.Repository
             existingStock.MarketCap = updateDto.MarketCap;
 
             await _context.SaveChangesAsync();
-
-            Console.WriteLine($"Existing Stock ::: {existingStock}");
 
             return existingStock;
         }
