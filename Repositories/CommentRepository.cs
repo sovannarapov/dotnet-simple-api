@@ -1,5 +1,4 @@
 using api.Data;
-using api.Dtos.Comment;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -15,28 +14,32 @@ namespace api.Repositories
             _context = context;
         }
 
-        public async Task<Comment> CreateAsync(Comment commentModel)
+        public async Task<Comment> CreateAsync(Comment comment)
         {
-            await _context.Comments.AddAsync(commentModel);
+            await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
-            return commentModel;
+            return comment;
         }
 
         public async Task<Comment?> DeleteAsync(int id)
         {
-            var commentModel = await _context.Comments.FirstOrDefaultAsync(comment => comment.Id == id);
+            /*
+             * FirstOrDefaultAsync is used to retrieve the first entity that matches a specified condition
+             * returns null if no matching entity is found
+             */
+            var comment = await _context.Comments.FirstOrDefaultAsync(comment => comment.Id == id);
 
-            if (commentModel == null)
+            if (comment == null)
             {
                 return null;
             }
 
-            _context.Comments.Remove(commentModel);
+            _context.Comments.Remove(comment);
 
             await _context.SaveChangesAsync();
 
-            return commentModel;
+            return comment;
         }
 
         public async Task<List<Comment>> GetAllAsync()
@@ -49,17 +52,21 @@ namespace api.Repositories
             return await _context.Comments.FindAsync(id);
         }
 
-        public async Task<Comment?> UpdateAsync(int id, UpdateCommentRequestDto commentDto)
+        public async Task<Comment?> UpdateAsync(int id, Comment comment)
         {
-            var existingComment = await _context.Comments.FirstOrDefaultAsync(comment => comment.Id == id);
+            /*
+             * FindAsync() is specifically designed to look up an entity by its primary key
+             * returning null if no entity is found with that key
+             */
+            var existingComment = await _context.Comments.FindAsync(id);
 
             if (existingComment == null)
             {
                 return null;
             }
 
-            existingComment.Title = commentDto.Title;
-            existingComment.Content = commentDto.Content;
+            existingComment.Title = comment.Title;
+            existingComment.Content = comment.Content;
 
             await _context.SaveChangesAsync();
 
