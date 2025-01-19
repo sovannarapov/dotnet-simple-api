@@ -45,6 +45,8 @@ namespace api.Controllers
         [Route("{stockId:int}")]
         public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentRequestDto createCommentRequestDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
             if (!await _stockRepository.StockExists(stockId))
             {
                 return BadRequest("Stock does not exist");
@@ -61,6 +63,8 @@ namespace api.Controllers
         [Route("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateCommentRequestDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
             var comment = await _commentRepository.UpdateAsync(id, updateCommentRequestDto.ToCommentFromUpdateDto());
 
             if (comment == null)
