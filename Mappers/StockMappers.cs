@@ -5,31 +5,45 @@ namespace api.Mappers
 {
     public static class StockMappers
     {
-        public static StockDto ToStockDto(this Stock stockModel)
+        public static StockDto ToStockDto(this Stock stock)
         {
             return new StockDto
             {
-                Id = stockModel.Id,
-                Symbol = stockModel.Symbol,
-                CompanyName = stockModel.CompanyName,
-                Purchase = stockModel.Purchase,
-                Industry = stockModel.Industry,
-                LastDiv = stockModel.LastDiv,
-                MarketCap = stockModel.MarketCap,
-                Comments = [.. stockModel.Comments.Select(c => c.ToCommentDto())],
+                Id = stock.Id,
+                Symbol = stock.Symbol,
+                CompanyName = stock.CompanyName,
+                Purchase = stock.Purchase,
+                Industry = stock.Industry,
+                LastDiv = stock.LastDiv,
+                MarketCap = stock.MarketCap,
+                Comments = stock.Comments.Select(comment => comment.ToCommentDto()).ToList()
             };
         }
 
-        public static Stock ToStockFromCreateDto(this CreateStockRequestDto stockDto)
+        public static Stock ToStockFromCreateDto(this CreateStockRequestDto createStockRequestDto)
         {
             return new Stock
             {
-                Symbol = stockDto.Symbol,
-                CompanyName = stockDto.CompanyName,
-                Purchase = stockDto.Purchase,
-                Industry = stockDto.Industry,
-                LastDiv = stockDto.LastDiv,
-                MarketCap = stockDto.MarketCap
+                Symbol = createStockRequestDto.Symbol,
+                CompanyName = createStockRequestDto.CompanyName,
+                Purchase = createStockRequestDto.Purchase,
+                Industry = createStockRequestDto.Industry,
+                LastDiv = createStockRequestDto.LastDiv,
+                MarketCap = createStockRequestDto.MarketCap
+            };
+        }
+
+        public static StockWithoutCommentsDto ToStockWithoutCommentsDto(this Stock stock)
+        {
+            return new StockWithoutCommentsDto
+            {
+                Id = stock.Id,
+                Symbol = stock.Symbol,
+                CompanyName = stock.CompanyName,
+                Purchase = stock.Purchase,
+                Industry = stock.Industry,
+                LastDiv = stock.LastDiv,
+                MarketCap = stock.MarketCap,
             };
         }
     }
