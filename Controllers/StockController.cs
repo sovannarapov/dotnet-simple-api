@@ -43,6 +43,8 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
             var stock = stockDto.ToStockFromCreateDto();
 
             await _stockRepository.CreateAsync(stock);
@@ -53,6 +55,8 @@ namespace api.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            
             var stock = await _stockRepository.UpdateAsync(id, updateDto);
 
             if (stock == null)
