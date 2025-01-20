@@ -31,11 +31,11 @@ namespace api.Controllers
             var user = await _userManager.Users.FirstOrDefaultAsync(user =>
                 user.Email == loginRequestDto.Email.ToLower());
 
-            if (user == null) return Unauthorized("Invalid email!");
+            if (user == null) return Unauthorized("Invalid email");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequestDto.Password, false);
 
-            if (!result.Succeeded) return Unauthorized("Email is not found or incorrect password");
+            if (!result.Succeeded) return Unauthorized("Incorrect email or password");
 
             return Ok(new NewUserDto
             {
