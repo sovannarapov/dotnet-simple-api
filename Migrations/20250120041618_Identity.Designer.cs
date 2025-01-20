@@ -9,10 +9,10 @@ using api.Data;
 
 #nullable disable
 
-namespace api.Data.Migrations
+namespace api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250119134519_Identity")]
+    [Migration("20250120041618_Identity")]
     partial class Identity
     {
         /// <inheritdoc />
