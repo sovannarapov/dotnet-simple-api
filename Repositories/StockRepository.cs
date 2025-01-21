@@ -21,7 +21,7 @@ namespace api.Repositories
             var stocks = _context
                 .Stocks
                 .Include(stock => stock.Comments)
-                .ThenInclude(c => c.AppUser)
+                .ThenInclude(comment => comment.AppUser)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(queryObject.CompanyName))
