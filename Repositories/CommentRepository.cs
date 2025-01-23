@@ -65,7 +65,9 @@ namespace api.Repositories
              * FindAsync() is specifically designed to look up an entity by its primary key
              * returning null if no entity is found with that key
              */
-            var existingComment = await _context.Comments.FindAsync(id);
+            var existingComment = await _context.Comments
+                .Include(cmt => cmt.AppUser)
+                .FirstOrDefaultAsync(cmt => cmt.Id == id);
 
             if (existingComment == null)
             {
