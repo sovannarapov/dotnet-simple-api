@@ -2,6 +2,8 @@
 
 Dotnet Simple API is a web application built with ASP.NET Core that provides endpoints for managing stocks and comments.
 
+![alt text](https://github.com/sovannarapov/dotnet-simple-api/blob/main/Dotnet-Simple-API.png)
+
 ## Table of Contents
 
 - [Features](#features)
