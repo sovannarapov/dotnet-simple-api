@@ -51,6 +51,7 @@ namespace api.Repositories
         {
             return await _context.Stocks
                 .Include(stock => stock.Comments)
+                .ThenInclude(comment => comment.AppUser)
                 .FirstOrDefaultAsync(stock => stock.Id == id);
         }
 
