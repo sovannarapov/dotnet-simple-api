@@ -15,6 +15,8 @@ Dotnet Simple API is a web application built with ASP.NET Core that provides end
 - Manage stocks and comments
 - JWT authentication
 - Swagger for API documentation
+- Pagination and sorting for stocks
+- Filtering stocks by company name and industry
 
 ## Technologies
 
@@ -86,178 +88,40 @@ The application can be configured using the `appsettings.json` file. Below is an
 
 ### Endpoints
 
-#### Stocks
+### Stock
 
-- `GET /api/stocks` - Get all stocks
-   - Response: `200 OK` with a list of stocks
-   - Example Response:
-     ```json
-     [
-       {
-         "id": 1,
-         "symbol": "AAPL",
-         "companyName": "Apple Inc.",
-         "purchase": 150.00,
-         "lastDiv": 0.82,
-         "industry": "Technology",
-         "marketCap": 2500000000000
-       }
-     ]
-     ```
+- `GET /api/stock` - Get all stocks
 
-- `GET /api/stocks/{id}` - Get a stock by ID
-   - Parameters: `id` (int) - The ID of the stock
-   - Response: `200 OK` with the stock details or `404 Not Found` if the stock does not exist
-   - Example Response:
-     ```json
-     {
-       "id": 1,
-       "symbol": "AAPL",
-       "companyName": "Apple Inc.",
-       "purchase": 150.00,
-       "lastDiv": 0.82,
-       "industry": "Technology",
-       "marketCap": 2500000000000
-     }
-     ```
+- `GET /api/stock/{id}` - Get a stock by ID
 
-- `POST /api/stocks` - Create a new stock
-   - Request Body: JSON object with `symbol`, `companyName`, `purchase`, `lastDiv`, `industry`, and `marketCap`
-   - Example Request:
-     ```json
-     {
-       "symbol": "AAPL",
-       "companyName": "Apple Inc.",
-       "purchase": 150.00,
-       "lastDiv": 0.82,
-       "industry": "Technology",
-       "marketCap": 2500000000000
-     }
-     ```
-   - Response: `201 Created` with the created stock details
-   - Example Response:
-     ```json
-     {
-       "id": 1,
-       "symbol": "AAPL",
-       "companyName": "Apple Inc.",
-       "purchase": 150.00,
-       "lastDiv": 0.82,
-       "industry": "Technology",
-       "marketCap": 2500000000000
-     }
-     ```
+- `POST /api/stock` - Create a new stock
 
-- `PUT /api/stocks/{id}` - Update a stock
-   - Parameters: `id` (int) - The ID of the stock
-   - Request Body: JSON object with updated `symbol`, `companyName`, `purchase`, `lastDiv`, `industry`, and `marketCap`
-   - Example Request:
-     ```json
-     {
-       "symbol": "AAPL",
-       "companyName": "Apple Inc.",
-       "purchase": 155.00,
-       "lastDiv": 0.85,
-       "industry": "Technology",
-       "marketCap": 2600000000000
-     }
-     ```
-   - Response: `200 OK` with the updated stock details or `404 Not Found` if the stock does not exist
-   - Example Response:
-     ```json
-     {
-       "id": 1,
-       "symbol": "AAPL",
-       "companyName": "Apple Inc.",
-       "purchase": 155.00,
-       "lastDiv": 0.85,
-       "industry": "Technology",
-       "marketCap": 2600000000000
-     }
-     ```
+- `PUT /api/stock/{id}` - Update a stock
+    
+- `DELETE /api/stock/{id}` - Delete a stock
 
-- `DELETE /api/stocks/{id}` - Delete a stock
-   - Parameters: `id` (int) - The ID of the stock
-   - Response: `204 No Content` or `404 Not Found` if the stock does not exist
+### Comment
 
-#### Comments
+- `GET /api/comment` - Get all comments
 
-- `GET /api/comments` - Get all comments
-   - Response: `200 OK` with a list of comments
-   - Example Response:
-     ```json
-     [
-       {
-         "id": 1,
-         "title": "Great Stock",
-         "content": "This stock has great potential.",
-         "createdOn": "2023-10-01T12:00:00Z",
-         "stockId": 1
-       }
-     ]
-     ```
+- `GET /api/comment/{id}` - Get a comment by ID
 
-- `GET /api/comments/{id}` - Get a comment by ID
-   - Parameters: `id` (int) - The ID of the comment
-   - Response: `200 OK` with the comment details or `404 Not Found` if the comment does not exist
-   - Example Response:
-     ```json
-     {
-       "id": 1,
-       "title": "Great Stock",
-       "content": "This stock has great potential.",
-       "createdOn": "2023-10-01T12:00:00Z",
-       "stockId": 1
-     }
-     ```
+- `POST /api/comment/{stockId}` - Create a new comment
 
-- `POST /api/comments` - Create a new comment
-   - Request Body: JSON object with `title`, `content`, `createdOn`, and `stockId`
-   - Example Request:
-     ```json
-     {
-       "title": "Great Stock",
-       "content": "This stock has great potential.",
-       "createdOn": "2023-10-01T12:00:00Z",
-       "stockId": 1
-     }
-     ```
-   - Response: `201 Created` with the created comment details
-   - Example Response:
-     ```json
-     {
-       "id": 1,
-       "title": "Great Stock",
-       "content": "This stock has great potential.",
-       "createdOn": "2023-10-01T12:00:00Z",
-       "stockId": 1
-     }
-     ```
+- `PUT /api/comment/{id}` - Update a comment
 
-- `PUT /api/comments/{id}` - Update a comment
-   - Parameters: `id` (int) - The ID of the comment
-   - Request Body: JSON object with updated `title`, `content`, `createdOn`, and `stockId`
-   - Example Request:
-     ```json
-     {
-       "title": "Updated Comment",
-       "content": "Updated content.",
-       "createdOn": "2023-10-02T12:00:00Z",
-       "stockId": 1
-     }
-     ```
-   - Response: `200 OK` with the updated comment details or `404 Not Found` if the comment does not exist
-   - Example Response:
-     ```json
-     {
-       "id": 1,
-       "title": "Updated Comment",
-       "content": "Updated content.",
-       "createdOn": "2023-10-02T12:00:00Z",
-       "stockId": 1
-     }
-     ```
+- `DELETE /api/comment/{id}` - Delete a comment
 
-- `DELETE /api/comments/{id}` - Delete a comment
-   - Parameters: `id` (int) - The ID of the comment
-   - Response: `204 No Content` or `404 Not Found` if the comment does not exist
+### Portfolio
+
+- `GET /api/portfolio` - Get the user's portfolio
+
+- `POST /api/portfolio` - Add a stock to the user's portfolio
+
+- `DELETE /api/portfolio` - Delete a stock from the user's portfolio
+
+### Account
+
+- `POST /api/account/login` - Login to the account
+
+- `POST /api/account/register` - Register a new account
