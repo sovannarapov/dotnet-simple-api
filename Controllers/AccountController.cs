@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace api.Controllers
 {
-    [Route("api/account")]
+    [Route("api/v{apiVersion:apiVersion}/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
