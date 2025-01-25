@@ -90,40 +90,40 @@ The application can be configured using the `appsettings.json` file. Below is an
 
 ### Endpoints
 
+### Account
+
+- `POST /api/v1/account/login` - Login to the account
+
+- `POST /api/v1/account/register` - Register a new account
+
 ### Stock
 
-- `GET /api/stock` - Get all stocks
+- `GET /api/v1/stock` - Get all stocks
 
-- `GET /api/stock/{id}` - Get a stock by ID
+- `GET /api/v1/stock/{id}` - Get a stock by ID
 
-- `POST /api/stock` - Create a new stock
+- `POST /api/v1/stock` - Create a new stock
 
-- `PUT /api/stock/{id}` - Update a stock
+- `PUT /api/v1/stock/{id}` - Update a stock
     
-- `DELETE /api/stock/{id}` - Delete a stock
+- `DELETE /api/v1/stock/{id}` - Delete a stock
 
 ### Comment
 
-- `GET /api/comment` - Get all comments
+- `GET /api/v1/comment` - Get all comments
 
-- `GET /api/comment/{id}` - Get a comment by ID
+- `GET /api/v1/comment/{id}` - Get a comment by ID
 
-- `POST /api/comment/{stockId}` - Create a new comment
+- `POST /api/v1/comment/{stockId}` - Create a new comment
 
-- `PUT /api/comment/{id}` - Update a comment
+- `PUT /api/v1/comment/{id}` - Update a comment
 
-- `DELETE /api/comment/{id}` - Delete a comment
+- `DELETE /api/v1/comment/{id}` - Delete a comment
 
 ### Portfolio
 
-- `GET /api/portfolio` - Get the user's portfolio
+- `GET /api/v1/portfolio` - Get the user's portfolio
 
-- `POST /api/portfolio` - Add a stock to the user's portfolio
+- `POST /api/v1/portfolio` - Add a stock to the user's portfolio
 
-- `DELETE /api/portfolio` - Delete a stock from the user's portfolio
-
-### Account
-
-- `POST /api/account/login` - Login to the account
-
-- `POST /api/account/register` - Register a new account
+- `DELETE /api/v1/portfolio` - Delete a stock from the user's portfolio
