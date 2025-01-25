@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/stock")]
+    [Route("api/v{apiVersion:apiVersion}/stock")]
+    [Authorize]
     [ApiController]
     public class StockController : ControllerBase
     {
@@ -24,7 +25,6 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
         {
             _logger.LogInformation("Getting all stocks");
