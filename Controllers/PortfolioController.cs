@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/portfolio")]
+    [Route("api/v{apiVersion:apiVersion}/portfolio")]
+    [Authorize]
     [ApiController]
     public class PortfolioController : ControllerBase
     {
@@ -23,7 +24,6 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetUserPortfolio()
         {
             var username = User.GetUsername();
@@ -39,7 +39,6 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> AddPortfolio(string symbol)
         {
             var username = User.GetUsername();
@@ -75,7 +74,6 @@ namespace api.Controllers
         }
 
         [HttpDelete]
-        [Authorize]
         public async Task<IActionResult> DeletePortfolio(string symbol)
         {
             var username = User.GetUsername();

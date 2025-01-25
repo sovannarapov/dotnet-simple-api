@@ -3,12 +3,14 @@ using api.Extensions;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
-    [Route("api/comment")]
+    [Route("api/v{apiVersion:apiVersion}/comment")]
+    [Authorize]
     [ApiController]
     public class CommentController : ControllerBase
     {
