@@ -12,12 +12,12 @@ namespace api.Presentation.Controllers;
 [ApiController]
 public class StockController : ControllerBase
 {
-    private readonly IStockRepository _stockRepository;
+    private readonly IStockService _stockService;
     private readonly ILogger<StockController> _logger;
     
-    public StockController(IStockRepository stockRepository, ILogger<StockController> logger)
+    public StockController(IStockService stockService, ILogger<StockController> logger)
     {
-        _stockRepository = stockRepository;
+        _stockService = stockService;
         _logger = logger;
     }
 
@@ -26,7 +26,7 @@ public class StockController : ControllerBase
     {
         _logger.LogInformation("Getting all stocks");
         
-        var stocks = await _stockRepository.GetAllAsync(queryObject);
+        var stocks = await _stockService.GetAllAsync(queryObject);
         var stockDto = stocks.Select(s => s.ToStockDto()).ToList();
 
         return Ok(stockDto);
@@ -37,7 +37,7 @@ public class StockController : ControllerBase
     {
         _logger.LogInformation("Getting stock by id");
         
-        var stock = await _stockRepository.GetByIdAsync(id);
+        var stock = await _stockService.GetByIdAsync(id);
 
         if (stock == null)
         {
@@ -56,7 +56,7 @@ public class StockController : ControllerBase
         
         var stock = stockDto.ToStockFromCreateDto();
 
-        await _stockRepository.CreateAsync(stock);
+        await _stockService.CreateAsync(stock);
         
         _logger.LogInformation("Creating stock successful");
         
@@ -70,7 +70,7 @@ public class StockController : ControllerBase
         
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
-        var stock = await _stockRepository.UpdateAsync(id, updateDto);
+        var stock = await _stockService.UpdateAsync(id, updateDto);
 
         if (stock == null)
         {
@@ -87,7 +87,7 @@ public class StockController : ControllerBase
     {
         _logger.LogInformation("Deleting stock by id {id}", id);
         
-        var stockModel = await _stockRepository.DeleteAsync(id);
+        var stockModel = await _stockService.DeleteAsync(id);
 
         if (stockModel == null)
         {
