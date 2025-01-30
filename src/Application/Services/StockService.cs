@@ -48,4 +48,11 @@ public class StockService : IStockService
         
         return deletedStock;
     }
+
+    public async Task<bool> StockExists(int id)
+    {
+        var stockExists = await _stockRepository.StockExists(id);
+
+        return stockExists;
+    }
 }
