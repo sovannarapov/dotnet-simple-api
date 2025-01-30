@@ -43,7 +43,7 @@ public class StockRepository : IStockRepository
         var skip = (queryObject.PageNumber - 1) * queryObject.PageSize;
         var take = queryObject.PageSize;
 
-        return await stocks.Skip(skip).Take(take).ToListAsync();
+        return await stocks.OrderBy(stock => stock.Id).Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<Stock?> GetByIdAsync(int id)
