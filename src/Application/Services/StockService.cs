@@ -27,6 +27,13 @@ public class StockService : IStockService
         
         return stock;
     }
+    
+    public async Task<Stock?> GetBySymbolAsync(string symbol)
+    {
+        var stock = await _stockRepository.GetBySymbolAsync(symbol);
+        
+        return stock;
+    }
 
     public async Task<Stock> CreateAsync(Stock stock)
     {
