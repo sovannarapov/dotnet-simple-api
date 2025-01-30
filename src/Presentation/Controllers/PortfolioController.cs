@@ -1,3 +1,4 @@
+using api.Common;
 using api.Common.Extensions;
 using api.Core.Entities;
 using api.Core.Interfaces;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Presentation.Controllers;
 
-[Route("api/v{apiVersion:apiVersion}/portfolio")]
+[Route(RouteConstants.PortfolioRoutePrefix)]
 [Authorize]
 [ApiController]
 public class PortfolioController : ControllerBase

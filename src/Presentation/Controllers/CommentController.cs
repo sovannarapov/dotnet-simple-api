@@ -1,5 +1,6 @@
 using api.Application.Dtos.Comment;
 using api.Application.Mappers;
+using api.Common;
 using api.Common.Extensions;
 using api.Core.Entities;
 using api.Core.Interfaces;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Presentation.Controllers;
 
-[Route("api/v{apiVersion:apiVersion}/comment")]
+[Route(RouteConstants.CommentRoutePrefix)]
 [Authorize]
 [ApiController]
 public class CommentController : ControllerBase

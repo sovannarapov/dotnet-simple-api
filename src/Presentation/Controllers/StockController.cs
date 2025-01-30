@@ -1,5 +1,6 @@
 using api.Application.Dtos.Stock;
 using api.Application.Mappers;
+using api.Common;
 using api.Common.Helpers;
 using api.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api.Presentation.Controllers;
 
-[Route("api/v{apiVersion:apiVersion}/stock")]
+[Route(RouteConstants.StockRoutePrefix)]
 [Authorize]
 [ApiController]
 public class StockController : ControllerBase

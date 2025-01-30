@@ -1,4 +1,5 @@
 using api.Application.Dtos.Account;
+using api.Common;
 using api.Core.Entities;
 using api.Core.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -8,7 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace api.Presentation.Controllers;
 
-[Route("api/v{apiVersion:apiVersion}/account")]
+[Route(RouteConstants.AccountRoutePrefix)]
 [ApiController]
 public class AccountController : ControllerBase
 {
