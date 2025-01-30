@@ -2,7 +2,7 @@ using api.Core.Entities;
 
 namespace api.Core.Interfaces;
 
-public interface ICommentRepository
+public interface ICommentService
 {
     Task<List<Comment>> GetAllAsync();
     Task<Comment?> GetByIdAsync(int id);

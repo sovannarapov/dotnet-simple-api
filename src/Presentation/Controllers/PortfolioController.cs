@@ -13,18 +13,18 @@ namespace api.Presentation.Controllers;
 public class PortfolioController : ControllerBase
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IStockRepository _stockRepository;
-    private readonly IPortfolioRepository _portfolioRepository;
+    private readonly IStockService _stockService;
+    private readonly IPortfolioService _portfolioService;
     
     public PortfolioController(
-        UserManager<AppUser> userManager, 
-        IStockRepository stockRepository, 
-        IPortfolioRepository portfolioRepository
+        UserManager<AppUser> userManager,
+        IStockService stockService,
+        IPortfolioService portfolioService
     )
     {
         _userManager = userManager;
-        _stockRepository = stockRepository;
-        _portfolioRepository = portfolioRepository;
+        _stockService = stockService;
+        _portfolioService = portfolioService;
     }
 
     [HttpGet]
@@ -38,7 +38,7 @@ public class PortfolioController : ControllerBase
             return NotFound("User not found");
         }
 
-        var userPortfolio = await _portfolioRepository.GetUserPortfolio(appUser);
+        var userPortfolio = await _portfolioService.GetUserPortfolio(appUser);
         return Ok(userPortfolio);
     }
 
@@ -47,14 +47,14 @@ public class PortfolioController : ControllerBase
     {
         var username = User.GetUsername();
         var appUser = await _userManager.FindByNameAsync(username);
-        var stock = await _stockRepository.GetBySymbolAsync(symbol);
+        var stock = await _stockService.GetBySymbolAsync(symbol);
 
         if (stock == null)
         {
             return BadRequest("Stock not found");
         }
 
-        var userPortfolio = await _portfolioRepository.GetUserPortfolio(appUser);
+        var userPortfolio = await _portfolioService.GetUserPortfolio(appUser);
 
         if (userPortfolio.Any(e => e.Symbol.ToLower() == symbol.ToLower()))
         {
@@ -67,14 +67,19 @@ public class PortfolioController : ControllerBase
             StockId = stock.Id
         };
 
-        await _portfolioRepository.CreateAsync(portfolio);
+        await _portfolioService.CreateAsync(portfolio);
 
         if (portfolio == null)
         {
             return BadRequest("Failed to add stock to portfolio");
         }
 
-        return Created("Portfolio created successfully", new { portfolio.AppUserId, portfolio.StockId, portfolio.Stock });
+        return Created("Portfolio created successfully", new
+        {
+            portfolio.AppUserId, 
+            portfolio.StockId, 
+            portfolio.Stock
+        });
     }
 
     [HttpDelete]
@@ -82,13 +87,13 @@ public class PortfolioController : ControllerBase
     {
         var username = User.GetUsername();
         var appUser = await _userManager.FindByNameAsync(username);
-        var userPortfolio = await _portfolioRepository.GetUserPortfolio(appUser);
+        var userPortfolio = await _portfolioService.GetUserPortfolio(appUser);
 
         var filteredStock = userPortfolio.Where(stock => stock.Symbol.ToLower() == symbol.ToLower()).ToList();
 
         if (filteredStock.Count == 1)
         {
-            await _portfolioRepository.DeleteAsync(appUser, symbol);
+            await _portfolioService.DeleteAsync(appUser, symbol);
         }
         else
         {
