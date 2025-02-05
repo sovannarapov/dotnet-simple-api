@@ -82,7 +82,7 @@ public class StockControllerTests
         var result = (CreatedAtActionResult) await _controller.Create(newStockRequest);
     
         // Assert
-        var createdAtActionResult = result.Should().Subject;
+        result.Should().NotBeNull();
         var returnValue = result.Value.Should().BeOfType<StockWithoutCommentsDto>().Subject;
         returnValue.CompanyName.Should().Be("MSFT");
     }
