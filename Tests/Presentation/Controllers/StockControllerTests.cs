@@ -25,6 +25,7 @@ public class StockControllerTests
     [Fact]
     public async Task GetStocks_ReturnsOkResult_WithListOfStocks()
     {
+        // Arrange
         var queryObject = new QueryObject();
         var stocks = A.Fake<List<Stock>>();
     
@@ -82,6 +83,7 @@ public class StockControllerTests
         var result = (CreatedAtActionResult) await _controller.Create(newStockRequest);
     
         // Assert
+        result.StatusCode.Should().Be(StatusCodes.Status201Created);
         result.Should().NotBeNull();
         var returnValue = result.Value.Should().BeOfType<StockWithoutCommentsDto>().Subject;
         returnValue.CompanyName.Should().Be("MSFT");
