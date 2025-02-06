@@ -1,5 +1,4 @@
 using api.Application.Dtos.Comment;
-using api.Application.Mappers;
 using api.Core.Entities;
 using api.Core.Interfaces;
 using api.Presentation.Controllers;
@@ -18,7 +17,6 @@ public class CommentControllerTests
     private readonly CommentController _controller;
 
     private readonly Mock<ICommentService> _mockCommentService;
-    private readonly Mock<IStockService> _mockStockService;
     private readonly Mock<UserManager<AppUser>> _mockUserManager;
 
     public CommentControllerTests()
@@ -29,11 +27,11 @@ public class CommentControllerTests
             store.Object, null!, null!, null!, null!, null!, null!, null!, null!
         );
         _mockCommentService = new Mock<ICommentService>();
-        _mockStockService = new Mock<IStockService>();
+        var mockStockService = new Mock<IStockService>();
 
         _controller = new CommentController(
             _mockCommentService.Object,
-            _mockStockService.Object,
+            mockStockService.Object,
             _mockUserManager.Object
         );
     }
