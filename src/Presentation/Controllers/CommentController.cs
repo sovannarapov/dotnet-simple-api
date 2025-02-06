@@ -34,7 +34,7 @@ public class CommentController : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var comments = await _commentService.GetAllAsync();
-        var commentDto = comments.Select(cmt => cmt.ToCommentDto());
+        var commentDto = comments.Select(cmt => cmt.ToCommentDto()).ToList();
 
         return Ok(commentDto);
     }
@@ -69,10 +69,10 @@ public class CommentController : ControllerBase
         
         var comment = createCommentRequestDto.ToCommentFromCreateDto(stockId);
 
-        comment.AppUserId = appUser.Id;
+        comment.AppUserId = appUser!.Id;
         await _commentService.CreateAsync(comment);
-
-        return CreatedAtAction(nameof(GetById), new { Id = comment.Id }, comment.ToCommentDto());
+        
+        return CreatedAtAction(nameof(GetById), new { comment.Id }, comment.ToCommentDto());
     }
 
     [HttpPut]
