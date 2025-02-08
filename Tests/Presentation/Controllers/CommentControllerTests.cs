@@ -22,12 +22,12 @@ public class CommentControllerTests
     public CommentControllerTests()
     {
         var store = new Mock<IUserStore<AppUser>>();
+        var mockStockService = new Mock<IStockService>();
 
         _mockUserManager = new Mock<UserManager<AppUser>>(
             store.Object, null!, null!, null!, null!, null!, null!, null!, null!
         );
         _mockCommentService = new Mock<ICommentService>();
-        var mockStockService = new Mock<IStockService>();
 
         _controller = new CommentController(
             _mockCommentService.Object,
@@ -36,6 +36,11 @@ public class CommentControllerTests
         );
     }
 
+    private static Comment CreateFakeComment()
+    {
+        return A.Fake<Comment>();
+    }
+    
     private static AppUser CreateFakeUser()
     {
         return A.Fake<AppUser>();
@@ -69,7 +74,7 @@ public class CommentControllerTests
         _mockCommentService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync((Comment?)null);
 
         // Act
-        var result = (NotFoundResult)await _controller.GetById(1);
+        var result = (NotFoundResult) await _controller.GetById(1);
 
         // Assert
         result.Should().BeOfType<NotFoundResult>();
@@ -83,7 +88,7 @@ public class CommentControllerTests
         _controller.ModelState.AddModelError("Title", "Title is required");
 
         // Act
-        var result = (BadRequestObjectResult)await _controller.Create(1, new CreateCommentRequestDto());
+        var result = (BadRequestObjectResult) await _controller.Create(1, new CreateCommentRequestDto());
 
         // Assert
         result.Should().NotBeNull();
@@ -97,7 +102,7 @@ public class CommentControllerTests
         _mockCommentService.Setup(service => service.CreateAsync(It.IsAny<Comment>()));
 
         // Act
-        var result = (BadRequestObjectResult)await _controller.Create(1, new CreateCommentRequestDto());
+        var result = (BadRequestObjectResult) await _controller.Create(1, new CreateCommentRequestDto());
 
         // Assert
         result.Should().NotBeNull();
@@ -111,7 +116,7 @@ public class CommentControllerTests
         _controller.ModelState.AddModelError("Title", "Title is required");
 
         // Act
-        var result = (BadRequestObjectResult)await _controller.Update(1, new UpdateCommentRequestDto());
+        var result = (BadRequestObjectResult) await _controller.Update(1, new UpdateCommentRequestDto());
 
         // Assert
         result.Should().NotBeNull();
@@ -125,7 +130,7 @@ public class CommentControllerTests
         _mockCommentService.Setup(service => service.UpdateAsync(1, It.IsAny<Comment>())).ReturnsAsync((Comment?)null);
 
         // Act
-        var result = (NotFoundObjectResult)await _controller.Update(1, new UpdateCommentRequestDto());
+        var result = (NotFoundObjectResult) await _controller.Update(1, new UpdateCommentRequestDto());
 
         // Assert
         result.Should().NotBeNull();
@@ -139,7 +144,7 @@ public class CommentControllerTests
         _mockCommentService.Setup(service => service.DeleteAsync(1)).ReturnsAsync((Comment?)null);
 
         // Act
-        var result = (NotFoundResult)await _controller.Delete(1);
+        var result = (NotFoundResult) await _controller.Delete(1);
 
         // Assert
         result.Should().NotBeNull();
@@ -150,11 +155,11 @@ public class CommentControllerTests
     public async Task DeleteComment_ReturnsNoContent_WhenSuccessful()
     {
         // Arrange
-        var comment = new Comment { Id = 1, Title = "Title", Content = "Content" };
+        var comment = CreateFakeComment();
         _mockCommentService.Setup(service => service.DeleteAsync(1)).ReturnsAsync(comment);
 
         // Act
-        var result = (NoContentResult)await _controller.Delete(1);
+        var result = (NoContentResult) await _controller.Delete(1);
 
         // Assert
         result.Should().NotBeNull();
