@@ -30,7 +30,7 @@ public class AccountController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         var user = await _userManager.Users.FirstOrDefaultAsync(user =>
-            user.Email == loginRequestDto.Email.ToLower());
+            user.Email!.Equals(loginRequestDto.Email, StringComparison.CurrentCultureIgnoreCase));
 
         if (user == null) return Unauthorized("Invalid email");
 
@@ -40,8 +40,8 @@ public class AccountController : ControllerBase
 
         return Ok(new NewUserDto
         {
-            Username = user.UserName,
-            Email = user.Email,
+            Username = user.UserName!,
+            Email = user.Email!,
             Token = _tokenService.CreateToken(user)
         });
     }
@@ -62,7 +62,7 @@ public class AccountController : ControllerBase
                 Email = registerAccountRequestDto.Email
             };
 
-            var createdUser = await _userManager.CreateAsync(appUser, registerAccountRequestDto.Password);
+            var createdUser = await _userManager.CreateAsync(appUser, registerAccountRequestDto.Password!);
 
             if (!createdUser.Succeeded) return StatusCode(500, createdUser.Errors);
             
@@ -70,8 +70,8 @@ public class AccountController : ControllerBase
 
             return roleResult.Succeeded ? Ok(new NewUserDto
             {
-                Username = appUser.UserName,
-                Email = appUser.Email,
+                Username = appUser.UserName!,
+                Email = appUser.Email!,
                 Token = _tokenService.CreateToken(appUser)
             }) : StatusCode(500, createdUser.Errors);
         }
