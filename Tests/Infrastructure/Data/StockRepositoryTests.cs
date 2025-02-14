@@ -8,7 +8,7 @@ namespace api.Tests.Infrastructure.Data;
 
 public class StockRepositoryTests
 {
-    private async Task<ApplicationDbContext> GetDatabaseContext()
+    private static async Task<ApplicationDbContext> GetDatabaseContext()
     {
         var options = new DbContextOptionsBuilder<ApplicationDbContext>()
             .UseSqlServer(
@@ -17,7 +17,7 @@ public class StockRepositoryTests
 
         var context = new ApplicationDbContext(options);
 
-        context.Database.EnsureCreated();
+        await context.Database.EnsureCreatedAsync();
 
         if (await context.Users.AnyAsync()) return context;
 
