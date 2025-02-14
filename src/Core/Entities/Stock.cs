@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace api.Core.Entities;
 
 [Table("Stocks")]
-public class Stock
+public class Stock : BaseEntity
 {
-    public int Id { get; set; }
     public string Symbol { get; set; } = "";
     public string CompanyName { get; set; } = "";
     [Column(TypeName = "decimal(18,2)")]
