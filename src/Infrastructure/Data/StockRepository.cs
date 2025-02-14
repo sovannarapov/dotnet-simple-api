@@ -25,21 +25,17 @@ public class StockRepository : IStockRepository
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(queryObject.CompanyName))
-        {
             stocks = stocks.Where(stock => stock.CompanyName.Contains(queryObject.CompanyName));
-        }
 
         if (!string.IsNullOrWhiteSpace(queryObject.Industry))
-        {
             stocks = stocks.Where(stock => stock.Industry.Contains(queryObject.Industry));
-        }
 
         if (!string.IsNullOrWhiteSpace(queryObject.SortBy))
-        {
             stocks = queryObject.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase)
-                ? (queryObject.IsDescending ? stocks.OrderByDescending(stock => stock.Symbol) : stocks.OrderBy(stock => stock.Symbol))
+                ? queryObject.IsDescending
+                    ? stocks.OrderByDescending(stock => stock.Symbol)
+                    : stocks.OrderBy(stock => stock.Symbol)
                 : stocks;
-        }
 
         var skip = (queryObject.PageNumber - 1) * queryObject.PageSize;
         var take = queryObject.PageSize;
@@ -78,10 +74,7 @@ public class StockRepository : IStockRepository
     {
         var existingStock = await _context.Stocks.FirstOrDefaultAsync(stock => stock.Id == id);
 
-        if (existingStock == null)
-        {
-            return null;
-        }
+        if (existingStock == null) return null;
 
         existingStock.Symbol = updateDto.Symbol;
         existingStock.CompanyName = updateDto.CompanyName;
@@ -99,10 +92,7 @@ public class StockRepository : IStockRepository
     {
         var stockModel = await _context.Stocks.FirstOrDefaultAsync(stock => stock.Id == id);
 
-        if (stockModel == null)
-        {
-            return null;
-        }
+        if (stockModel == null) return null;
 
         _context.Stocks.Remove(stockModel);
 
