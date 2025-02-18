@@ -13,11 +13,12 @@ namespace api.Presentation.Controllers;
 [ApiController]
 public class AccountController : ControllerBase
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly ITokenService _tokenService;
     private readonly SignInManager<AppUser> _signInManager;
-    
-    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signInManager)
+    private readonly ITokenService _tokenService;
+    private readonly UserManager<AppUser> _userManager;
+
+    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, 
+        SignInManager<AppUser> signInManager)
     {
         _userManager = userManager;
         _tokenService = tokenService;
@@ -25,12 +26,17 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("login")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Login successful", typeof(NewUserDto))]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error occurred. Check the input data.")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized access. Invalid email or password.")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error. An unexpected error occurred.")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var user = await _userManager.Users.FirstOrDefaultAsync(user =>
-            user.Email == loginRequestDto.Email.ToLower());
+        var user = await _userManager.Users.FirstOrDefaultAsync(
+            user => user.Email == loginRequestDto.Email.ToLower(), CancellationToken.None
+        );
 
         if (user == null) return Unauthorized("Invalid email");
 
@@ -40,16 +46,17 @@ public class AccountController : ControllerBase
 
         return Ok(new NewUserDto
         {
-            Username = user.UserName,
-            Email = user.Email,
+            Username = user.UserName!,
+            Email = user.Email!,
             Token = _tokenService.CreateToken(user)
         });
     }
 
     [HttpPost("register")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Created", typeof(NewUserDto))]
-    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation Error Occured", typeof(void))]
-    [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized", typeof(void))]
+    [SwaggerResponse(StatusCodes.Status200OK, "User successfully created")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error occurred. Check the input data.")]
+    [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized access. Authentication is required.")]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error. An unexpected error occurred.")]
     public async Task<IActionResult> Register([FromBody] RegisterAccountRequestDto registerAccountRequestDto)
     {
         try
@@ -62,18 +69,13 @@ public class AccountController : ControllerBase
                 Email = registerAccountRequestDto.Email
             };
 
-            var createdUser = await _userManager.CreateAsync(appUser, registerAccountRequestDto.Password);
+            var createdUser = await _userManager.CreateAsync(appUser, registerAccountRequestDto.Password!);
 
             if (!createdUser.Succeeded) return StatusCode(500, createdUser.Errors);
-            
+
             var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
 
-            return roleResult.Succeeded ? Ok(new NewUserDto
-            {
-                Username = appUser.UserName,
-                Email = appUser.Email,
-                Token = _tokenService.CreateToken(appUser)
-            }) : StatusCode(500, createdUser.Errors);
+            return roleResult.Succeeded ? Ok("User successfully created") : StatusCode(500, createdUser.Errors);
         }
         catch (Exception ex)
         {
