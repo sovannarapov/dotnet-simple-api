@@ -1,0 +1,63 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: dotnet-simple-api
+  IMAGE_TAG: ${{ github.run_number }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 🏗
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.x'
+
+      - name: Restore dependencies 👨🏻‍💻
+        run: dotnet restore
+
+      - name: Build 🔨
+        run: dotnet build --no-restore
+        
+      - name: Login to Dockerhub 🐳
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+          
+      - name: Build and tag Docker image
+        run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME:v$IMAGE_TAG
+
+      - name: Push Docker image 🚀
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME:v$IMAGE_TAG
+
+      - name: Update image metadata 📝
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME:v$IMAGE_TAG
+          tags: |
+            type=sha
+          labels: |
+            org.opencontainers.image.title=Dotnet Simple API
+            org.opencontainers.image.description=Build docker image for .Net with github-action and docker hub
+            org.opencontainers.image.url=https://github.com/${{github.repository}}
+            org.opencontainers.image.revision=${{github.sha}}
+            org.opencontainers.image.licenses=MIT
+
+      - name: Test 🧪
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Deploy 🚀
+        run: echo "Deploying your application..."
