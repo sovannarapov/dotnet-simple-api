@@ -20,4 +20,4 @@ WORKDIR /app
 
 COPY --from=build-env /app/out .
 
-ENTRYPOINT ["dotnet", "FormulaOneK8S.dll"]
+ENTRYPOINT ["dotnet", "api.dll"]
