@@ -1,24 +1,37 @@
-using api.Application.Services;
-using api.Core.Entities;
-using api.Core.Interfaces;
-using api.Infrastructure.Data;
-using api.Infrastructure.Middleware;
+using Application.Interfaces;
+using Application.Mappers;
+using Application.Services;
+using Core.Entities;
+using Core.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Middleware;
 using Asp.Versioning;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Register AutoMapper
+var mapperConfig = new MapperConfiguration(config =>
+{
+    config.AddProfile(new StockMappers());  // Add your mapping profiles
+});
+var mapper = mapperConfig.CreateMapper();
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(StockMappers));
 
 builder.Services.AddSwaggerGen(option =>
 {
@@ -123,7 +136,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
 

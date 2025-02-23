@@ -1,13 +1,14 @@
-using api.Application.Dtos.Account;
-using api.Common;
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Common;
+using Application.Dtos.Account;
+using Application.Interfaces;
+using Core.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace api.Presentation.Controllers;
+namespace Presentation.Controllers;
 
 [Route(RouteConstants.AccountRoutePrefix)]
 [ApiController]

@@ -1,13 +1,14 @@
-using api.Application.Dtos.Comment;
-using api.Core.Entities;
-using api.Core.Interfaces;
-using api.Presentation.Controllers;
+using Application.Dtos.Comment;
+using Application.Interfaces;
+using AutoMapper;
+using Core.Entities;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
+using Presentation.Controllers;
 using Times = Moq.Times;
 
 namespace api.Tests.Presentation.Controllers;
@@ -23,6 +24,7 @@ public class CommentControllerTests
     {
         var store = new Mock<IUserStore<AppUser>>();
         var mockStockService = new Mock<IStockService>();
+        var mockMapper = new Mock<IMapper>();
 
         _mockUserManager = new Mock<UserManager<AppUser>>(
             store.Object, null!, null!, null!, null!, null!, null!, null!, null!
@@ -32,7 +34,8 @@ public class CommentControllerTests
         _controller = new CommentController(
             _mockCommentService.Object,
             mockStockService.Object,
-            _mockUserManager.Object
+            _mockUserManager.Object,
+            mockMapper.Object
         );
     }
 

@@ -1,12 +1,12 @@
-using api.Common;
-using api.Common.Extensions;
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Common;
+using Common.Extensions;
+using Application.Interfaces;
+using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Presentation.Controllers;
+namespace Presentation.Controllers;
 
 [Route(RouteConstants.PortfolioRoutePrefix)]
 [Authorize]

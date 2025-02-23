@@ -1,5 +1,5 @@
-using api.Core.Entities;
-using api.Infrastructure.Data;
+using Core.Entities;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Tests.Infrastructure.Data

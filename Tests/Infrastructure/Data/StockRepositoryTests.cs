@@ -1,8 +1,7 @@
-using api.Common.Helpers;
-using api.Core.Entities;
-using api.Infrastructure.Data;
+using Common.Helpers;
+using Core.Entities;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace api.Tests.Infrastructure.Data;
 

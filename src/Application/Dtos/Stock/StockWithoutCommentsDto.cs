@@ -1,4 +1,4 @@
-namespace api.Application.Dtos.Stock;
+namespace Application.Dtos.Stock;
 
 public class StockWithoutCommentsDto
 {

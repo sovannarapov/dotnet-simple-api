@@ -1,49 +1,15 @@
-using api.Application.Dtos.Stock;
-using api.Core.Entities;
+using Application.Dtos.Stock;
+using Core.Entities;
+using AutoMapper;
 
-namespace api.Application.Mappers;
+namespace Application.Mappers;
 
-public static class StockMappers
+public class StockMappers : Profile
 {
-    public static StockDto ToStockDto(this Stock stock)
+    public StockMappers()
     {
-        return new StockDto
-        {
-            Id = stock.Id,
-            Symbol = stock.Symbol,
-            CompanyName = stock.CompanyName,
-            Purchase = stock.Purchase,
-            Industry = stock.Industry,
-            LastDiv = stock.LastDiv,
-            MarketCap = stock.MarketCap,
-            Comments = stock.Comments.Select(comment => comment.ToCommentDto()).ToList()
-        };
-    }
-
-    public static Stock ToStockFromCreateDto(this CreateStockRequestDto createStockRequestDto)
-    {
-        return new Stock
-        {
-            Symbol = createStockRequestDto.Symbol,
-            CompanyName = createStockRequestDto.CompanyName,
-            Purchase = createStockRequestDto.Purchase,
-            Industry = createStockRequestDto.Industry,
-            LastDiv = createStockRequestDto.LastDiv,
-            MarketCap = createStockRequestDto.MarketCap
-        };
-    }
-
-    public static StockWithoutCommentsDto ToStockWithoutCommentsDto(this Stock stock)
-    {
-        return new StockWithoutCommentsDto
-        {
-            Id = stock.Id,
-            Symbol = stock.Symbol,
-            CompanyName = stock.CompanyName,
-            Purchase = stock.Purchase,
-            Industry = stock.Industry,
-            LastDiv = stock.LastDiv,
-            MarketCap = stock.MarketCap,
-        };
+        CreateMap<Stock, StockDto>().ReverseMap();
+        CreateMap<Stock, CreateStockRequestDto>().ReverseMap();
+        CreateMap<Stock, UpdateStockRequestDto>().ReverseMap();
     }
 }

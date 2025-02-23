@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace api.Infrastructure.Middleware;
+namespace Infrastructure.Middleware;
 
 public class LoggingMiddleware
 {

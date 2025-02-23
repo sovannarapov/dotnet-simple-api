@@ -1,14 +1,14 @@
-using api.Application.Dtos.Account;
-using api.Core.Entities;
-using api.Core.Interfaces;
-using api.Presentation.Controllers;
+using Application.Dtos.Account;
+using Application.Interfaces;
+using Core.Entities;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MockQueryable;
 using Moq;
-using Xunit;
+using Presentation.Controllers;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace api.Tests.Presentation.Controllers;

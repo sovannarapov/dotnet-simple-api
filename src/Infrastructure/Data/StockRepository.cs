@@ -1,10 +1,9 @@
-using api.Application.Dtos.Stock;
-using api.Common.Helpers;
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Common.Helpers;
+using Core.Entities;
+using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Infrastructure.Data;
+namespace Infrastructure.Data;
 
 public class StockRepository : IStockRepository
 {
@@ -70,18 +69,18 @@ public class StockRepository : IStockRepository
         return stock;
     }
 
-    public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto updateDto)
+    public async Task<Stock?> UpdateAsync(int id, Stock stock)
     {
-        var existingStock = await _context.Stocks.FirstOrDefaultAsync(stock => stock.Id == id);
+        var existingStock = await _context.Stocks.FirstOrDefaultAsync(s => s.Id == id);
 
         if (existingStock == null) return null;
 
-        existingStock.Symbol = updateDto.Symbol;
-        existingStock.CompanyName = updateDto.CompanyName;
-        existingStock.Purchase = updateDto.Purchase;
-        existingStock.LastDiv = updateDto.LastDiv;
-        existingStock.Industry = updateDto.Industry;
-        existingStock.MarketCap = updateDto.MarketCap;
+        existingStock.Symbol = stock.Symbol;
+        existingStock.CompanyName = stock.CompanyName;
+        existingStock.Purchase = stock.Purchase;
+        existingStock.LastDiv = stock.LastDiv;
+        existingStock.Industry = stock.Industry;
+        existingStock.MarketCap = stock.MarketCap;
 
         await _context.SaveChangesAsync();
 

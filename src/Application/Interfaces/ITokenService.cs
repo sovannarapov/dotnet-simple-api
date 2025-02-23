@@ -1,6 +1,6 @@
-using api.Core.Entities;
+using Core.Entities;
 
-namespace api.Core.Interfaces;
+namespace Application.Interfaces;
 
 
 public interface ITokenService

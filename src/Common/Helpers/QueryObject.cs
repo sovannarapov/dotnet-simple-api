@@ -1,4 +1,4 @@
-namespace api.Common.Helpers;
+namespace Common.Helpers;
 
 public class QueryObject
 {

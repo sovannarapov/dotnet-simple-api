@@ -1,59 +1,64 @@
-using api.Application.Dtos.Stock;
-using api.Common.Helpers;
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Common.Helpers;
+using Application.Dtos.Stock;
+using Application.Interfaces;
+using AutoMapper;
+using Core.Entities;
+using Core.Interfaces;
 
-namespace api.Application.Services;
+namespace Application.Services;
 
 public class StockService : IStockService
 {
+    private readonly IMapper _mapper;
     private readonly IStockRepository _stockRepository;
 
-    public StockService(IStockRepository stockRepository)
+    public StockService(IStockRepository stockRepository, IMapper mapper)
     {
         _stockRepository = stockRepository;
+        _mapper = mapper;
     }
-    
-    public async Task<List<Stock>> GetAllAsync(QueryObject queryObject)
+
+    public async Task<List<StockDto>> GetAllAsync(QueryObject queryObject)
     {
         var stocks = await _stockRepository.GetAllAsync(queryObject);
-        
-        return stocks;
+
+        return _mapper.Map<List<StockDto>>(stocks);
     }
 
-    public async Task<Stock?> GetByIdAsync(int id)
+    public async Task<StockDto?> GetByIdAsync(int id)
     {
         var stock = await _stockRepository.GetByIdAsync(id);
-        
-        return stock;
+
+        return stock != null ? _mapper.Map<StockDto>(stock) : null;
     }
-    
-    public async Task<Stock?> GetBySymbolAsync(string symbol)
+
+    public async Task<StockDto?> GetBySymbolAsync(string symbol)
     {
         var stock = await _stockRepository.GetBySymbolAsync(symbol);
-        
-        return stock;
+
+        return _mapper.Map<StockDto>(stock);
     }
 
-    public async Task<Stock> CreateAsync(Stock stock)
+    public async Task<StockDto> CreateAsync(Stock stock)
     {
         var createdStock = await _stockRepository.CreateAsync(stock);
-        
-        return createdStock;
+
+        return _mapper.Map<StockDto>(createdStock);
     }
 
-    public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto updateStockRequestDto)
+    public async Task<StockDto?> UpdateAsync(int id, UpdateStockRequestDto updateStockRequestDto)
     {
-        var updatedStock = await _stockRepository.UpdateAsync(id, updateStockRequestDto);
-        
-        return updatedStock;
+        var stockToUpdate = _mapper.Map<Stock>(updateStockRequestDto);
+        var updatedStock = await _stockRepository.UpdateAsync(id, stockToUpdate);
+
+        return _mapper.Map<StockDto>(updatedStock);
     }
 
-    public async Task<Stock?> DeleteAsync(int id)
+    public async Task<StockDto?> DeleteAsync(int id)
     {
         var deletedStock = await _stockRepository.DeleteAsync(id);
-        
-        return deletedStock;
+
+        return _mapper.Map<StockDto>(deletedStock);
     }
 
     public async Task<bool> StockExists(int id)

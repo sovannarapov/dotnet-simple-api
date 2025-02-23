@@ -1,7 +1,8 @@
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Application.Interfaces;
+using Core.Entities;
+using Core.Interfaces;
 
-namespace api.Application.Services;
+namespace Application.Services;
 
 public class CommentService : ICommentService
 {
@@ -11,7 +12,7 @@ public class CommentService : ICommentService
     {
         _commentRepository = commentRepository;
     }
-    
+
     public async Task<List<Comment>> GetAllAsync()
     {
         var comments = await _commentRepository.GetAllAsync();

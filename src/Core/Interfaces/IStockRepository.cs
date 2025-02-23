@@ -1,8 +1,7 @@
-using api.Application.Dtos.Stock;
-using api.Common.Helpers;
-using api.Core.Entities;
+using Common.Helpers;
+using Core.Entities;
 
-namespace api.Core.Interfaces;
+namespace Core.Interfaces;
 
 public interface IStockRepository
 {
@@ -10,7 +9,7 @@ public interface IStockRepository
     Task<Stock?> GetByIdAsync(int id);
     Task<Stock?> GetBySymbolAsync(string symbol);
     Task<Stock> CreateAsync(Stock stock);
-    Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto updateStockRequestDto);
+    Task<Stock?> UpdateAsync(int id, Stock stock);
     Task<Stock?> DeleteAsync(int id);
     Task<bool> StockExists(int id);
 }

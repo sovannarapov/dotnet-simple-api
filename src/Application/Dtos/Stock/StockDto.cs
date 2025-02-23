@@ -1,6 +1,6 @@
-using api.Application.Dtos.Comment;
+using Application.Dtos.Comment;
 
-namespace api.Application.Dtos.Stock;
+namespace Application.Dtos.Stock;
 
 public class StockDto
 {

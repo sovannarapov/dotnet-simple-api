@@ -1,4 +1,4 @@
-namespace api.Application.Dtos.Comment;
+namespace Application.Dtos.Comment;
 
 public class CommentDto
 {

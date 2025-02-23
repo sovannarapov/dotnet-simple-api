@@ -1,20 +1,21 @@
-using api.Application.Dtos.Comment;
-using api.Application.Mappers;
-using api.Common;
-using api.Common.Extensions;
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Common;
+using Common.Extensions;
+using Application.Dtos.Comment;
+using Application.Interfaces;
+using AutoMapper;
+using Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Presentation.Controllers;
+namespace Presentation.Controllers;
 
 [Route(RouteConstants.CommentRoutePrefix)]
 [Authorize]
 [ApiController]
 public class CommentController : ControllerBase
 {
+    private readonly IMapper _mapper;
     private readonly ICommentService _commentService;
     private readonly IStockService _stockService;
     private readonly UserManager<AppUser> _userManager;
@@ -22,19 +23,21 @@ public class CommentController : ControllerBase
     public CommentController(
         ICommentService commentService, 
         IStockService stockService, 
-        UserManager<AppUser> userManager
+        UserManager<AppUser> userManager,
+        IMapper mapper
     )
     {
         _commentService = commentService;
         _stockService = stockService;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         var comments = await _commentService.GetAllAsync();
-        var commentDto = comments.Select(cmt => cmt.ToCommentDto()).ToList();
+        var commentDto = comments.Select(cmt => _mapper.Map<Comment>(comments)).ToList();
 
         return Ok(commentDto);
     }
@@ -50,7 +53,7 @@ public class CommentController : ControllerBase
             return NotFound();
         }
 
-        return Ok(comment.ToCommentDto());
+        return Ok(_mapper.Map<Comment>(comment));
     }
 
     [HttpPost]
@@ -65,14 +68,14 @@ public class CommentController : ControllerBase
         }
 
         var username = User.GetUsername();
-        var appUser = await _userManager.FindByNameAsync(username);
-        
-        var comment = createCommentRequestDto.ToCommentFromCreateDto(stockId);
+        var appUser = await _userManager.FindByNameAsync(username!);
 
-        comment.AppUserId = appUser!.Id;
+        var comment = _mapper.Map<Comment>(createCommentRequestDto);
+
+            comment.AppUserId = appUser!.Id;
         await _commentService.CreateAsync(comment);
         
-        return CreatedAtAction(nameof(GetById), new { comment.Id }, comment.ToCommentDto());
+        return CreatedAtAction(nameof(GetById), new { comment.Id }, _mapper.Map<Comment>(comment));
     }
 
     [HttpPut]
@@ -81,14 +84,14 @@ public class CommentController : ControllerBase
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         
-        var comment = await _commentService.UpdateAsync(id, updateCommentRequestDto.ToCommentFromUpdateDto());
+        var comment = await _commentService.UpdateAsync(id, _mapper.Map<Comment>(updateCommentRequestDto));
 
         if (comment == null)
         {
             return NotFound("Comment not found");
         }
 
-        return Ok(comment.ToCommentDto());
+        return Ok(_mapper.Map<Comment>(comment));
     }
 
     [HttpDelete]

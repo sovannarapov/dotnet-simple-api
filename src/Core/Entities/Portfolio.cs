@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api.Core.Entities;
+namespace Core.Entities;
 
 [Table("Portfolios")]
 public class Portfolio

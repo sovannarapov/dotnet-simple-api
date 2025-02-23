@@ -1,7 +1,8 @@
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Application.Interfaces;
+using Core.Entities;
+using Core.Interfaces;
 
-namespace api.Application.Services;
+namespace Application.Services;
 
 public class PortfolioService : IPortfolioService
 {

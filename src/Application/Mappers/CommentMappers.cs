@@ -1,40 +1,15 @@
+using Application.Dtos.Comment;
+using Core.Entities;
+using AutoMapper;
 
-using api.Application.Dtos.Comment;
-using api.Core.Entities;
+namespace Application.Mappers;
 
-namespace api.Application.Mappers;
-
-public static class CommentMappers
+public class CommentMappers : Profile
 {
-    public static CommentDto ToCommentDto(this Comment comment)
+    public CommentMappers()
     {
-        return new CommentDto
-        {
-            Id = comment.Id,
-            Title = comment.Title,
-            Content = comment.Content,
-            CreatedOn = comment.CreatedOn,
-            CreatedBy = comment.AppUser.UserName,
-            StockId = comment.StockId
-        };
-    }
-
-    public static Comment ToCommentFromCreateDto(this CreateCommentRequestDto createCommentRequestDto, int stockId)
-    {
-        return new Comment
-        {
-            Title = createCommentRequestDto.Title,
-            Content = createCommentRequestDto.Content,
-            StockId = stockId
-        };
-    }
-
-    public static Comment ToCommentFromUpdateDto(this UpdateCommentRequestDto updateCommentRequestDto)
-    {
-        return new Comment
-        {
-            Title = updateCommentRequestDto.Title,
-            Content = updateCommentRequestDto.Content
-        };
+        CreateMap<Comment, CommentDto>().ReverseMap();
+        CreateMap<Comment, CreateCommentRequestDto>().ReverseMap();
+        CreateMap<Comment, UpdateCommentRequestDto>().ReverseMap();
     }
 }

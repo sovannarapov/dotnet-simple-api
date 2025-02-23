@@ -1,12 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Core.Entities;
+using Application.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace api.Application.Services;
+namespace Application.Services;
 
 public class TokenService : ITokenService
 {

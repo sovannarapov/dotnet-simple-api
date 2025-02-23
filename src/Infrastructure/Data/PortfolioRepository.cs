@@ -1,8 +1,8 @@
-using api.Core.Entities;
-using api.Core.Interfaces;
+using Core.Entities;
+using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Infrastructure.Data;
+namespace Infrastructure.Data;
 
 public class PortfolioRepository : IPortfolioRepository
 {

@@ -1,13 +1,14 @@
-using api.Application.Dtos.Stock;
-using api.Common.Helpers;
-using api.Core.Entities;
-using api.Core.Interfaces;
-using api.Presentation.Controllers;
+using Application.Dtos.Stock;
+using Application.Interfaces;
+using AutoMapper;
+using Common.Helpers;
+using Core.Entities;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
+using Presentation.Controllers;
 
 namespace api.Tests.Presentation.Controllers;
 
@@ -18,8 +19,10 @@ public class StockControllerTests
 
     public StockControllerTests()
     {
+        var mockMapper = new Mock<IMapper>();
+        
         _mockStockService = new Mock<IStockService>();
-        _controller = new StockController(_mockStockService.Object);
+        _controller = new StockController(_mockStockService.Object, mockMapper.Object);
     }
 
     [Fact]
@@ -27,12 +30,12 @@ public class StockControllerTests
     {
         // Arrange
         var queryObject = new QueryObject();
-        var stocks = A.Fake<List<Stock>>();
+        var stocks = A.Fake<List<StockDto>>();
 
         _mockStockService.Setup(service => service.GetAllAsync(queryObject)).ReturnsAsync(stocks);
 
         // Act
-        var result = (OkObjectResult)await _controller.GetAll(queryObject);
+        var result = (OkObjectResult) await _controller.GetAll(queryObject);
 
         // Assert
         result.StatusCode.Should().Be(StatusCodes.Status200OK);
@@ -44,7 +47,7 @@ public class StockControllerTests
     public async Task GetStockById_ReturnsNotFound_WhenStockDoesNotExist()
     {
         // Arrange
-        _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync((Stock?)null);
+        _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync((StockDto?)null);
 
         // Act
         var result = (NotFoundResult)await _controller.GetById(1);
@@ -58,7 +61,7 @@ public class StockControllerTests
     public async Task GetStockById_ReturnsOk_WithStockDto()
     {
         // Arrange
-        var stock = A.Fake<Stock>();
+        var stock = A.Fake<StockDto>();
         _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(stock);
 
         // Act
@@ -75,7 +78,7 @@ public class StockControllerTests
     {
         // Arrange
         var newStockRequest = new CreateStockRequestDto { CompanyName = "MSFT", Purchase = 310 };
-        var createdStock = new Stock { Id = 3, CompanyName = "MSFT", Purchase = 310 };
+        var createdStock = new StockDto { Id = 3, CompanyName = "MSFT", Purchase = 310 };
 
         _mockStockService.Setup(service => service.CreateAsync(It.IsAny<Stock>())).ReturnsAsync(createdStock);
 
@@ -94,7 +97,7 @@ public class StockControllerTests
     {
         // Arrange
         var updateRequest = A.Fake<UpdateStockRequestDto>();
-        var existingStock = A.Fake<Stock>();
+        var existingStock = A.Fake<StockDto>();
 
         _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(existingStock);
         _mockStockService.Setup(service => service.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateStockRequestDto>()))
@@ -111,7 +114,7 @@ public class StockControllerTests
     public async Task DeleteStock_ReturnsNotFound_WhenStockDoesNotExist()
     {
         // Arrange
-        _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync((Stock?)null);
+        _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync((StockDto?)null);
 
         // Act
         var result = (NotFoundResult)await _controller.Delete(1);
@@ -125,7 +128,7 @@ public class StockControllerTests
     public async Task DeleteStock_ReturnsNoContent_WhenSuccessful()
     {
         // Arrange
-        var existingStock = new Stock { Id = 1, CompanyName = "AAPL", Purchase = 150 };
+        var existingStock = new StockDto { Id = 1, CompanyName = "AAPL", Purchase = 150 };
 
         _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(existingStock);
         _mockStockService.Setup(service => service.DeleteAsync(It.IsAny<int>())).ReturnsAsync(existingStock);

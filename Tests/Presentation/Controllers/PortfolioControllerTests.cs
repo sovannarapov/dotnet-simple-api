@@ -1,11 +1,12 @@
-using api.Core.Entities;
-using api.Core.Interfaces;
-using api.Presentation.Controllers;
+using Application.Dtos.Stock;
+using Application.Interfaces;
+using Core.Entities;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
+using Presentation.Controllers;
 using Times = Moq.Times;
 
 namespace api.Tests.Presentation.Controllers;
@@ -70,7 +71,7 @@ public class PortfolioControllerTests
     {
         // Arrange
         var fakeUser = CreateFakeUser();
-        var fakeStock = new Stock { Id = 1, Symbol = "AAPL" };
+        var fakeStock = new StockDto { Id = 1, Symbol = "AAPL" };
         var fakeStocks = new List<Stock>();
         var portfolio = new Portfolio();
 

@@ -1,4 +1,4 @@
-namespace api.Common;
+namespace Common;
 
 public static class RouteConstants
 {
