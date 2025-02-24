@@ -1,8 +1,7 @@
-using api.Common;
 using api.Application.Dtos.Account;
 using api.Application.Interfaces;
+using api.Common;
 using api.Core.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +17,7 @@ public class AccountController : ControllerBase
     private readonly ITokenService _tokenService;
     private readonly UserManager<AppUser> _userManager;
 
-    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService, 
+    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,
         SignInManager<AppUser> signInManager)
     {
         _userManager = userManager;

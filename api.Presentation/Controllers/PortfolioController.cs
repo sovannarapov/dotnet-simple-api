@@ -1,6 +1,6 @@
+using api.Application.Interfaces;
 using api.Common;
 using api.Common.Extensions;
-using api.Application.Interfaces;
 using api.Core.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,10 +13,10 @@ namespace api.Presentation.Controllers;
 [ApiController]
 public class PortfolioController : ControllerBase
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IStockService _stockService;
     private readonly IPortfolioService _portfolioService;
-    
+    private readonly IStockService _stockService;
+    private readonly UserManager<AppUser> _userManager;
+
     public PortfolioController(
         UserManager<AppUser> userManager,
         IStockService stockService,
@@ -34,10 +34,7 @@ public class PortfolioController : ControllerBase
         var username = User.GetUsername();
         var appUser = await _userManager.FindByNameAsync(username);
 
-        if (appUser == null)
-        {
-            return NotFound("User not found");
-        }
+        if (appUser == null) return NotFound("User not found");
 
         var userPortfolio = await _portfolioService.GetUserPortfolio(appUser);
         return Ok(userPortfolio);
@@ -50,17 +47,12 @@ public class PortfolioController : ControllerBase
         var appUser = await _userManager.FindByNameAsync(username);
         var stock = await _stockService.GetBySymbolAsync(symbol);
 
-        if (stock == null)
-        {
-            return BadRequest("Stock not found");
-        }
+        if (stock == null) return BadRequest("Stock not found");
 
         var userPortfolio = await _portfolioService.GetUserPortfolio(appUser);
 
         if (userPortfolio.Any(e => e.Symbol.ToLower() == symbol.ToLower()))
-        {
             return BadRequest("Stock already in portfolio");
-        }
 
         var portfolio = new Portfolio
         {
@@ -70,15 +62,12 @@ public class PortfolioController : ControllerBase
 
         await _portfolioService.CreateAsync(portfolio);
 
-        if (portfolio == null)
-        {
-            return BadRequest("Failed to add stock to portfolio");
-        }
+        if (portfolio == null) return BadRequest("Failed to add stock to portfolio");
 
         return Created("Portfolio created successfully", new
         {
-            portfolio.AppUserId, 
-            portfolio.StockId, 
+            portfolio.AppUserId,
+            portfolio.StockId,
             portfolio.Stock
         });
     }
@@ -93,13 +82,9 @@ public class PortfolioController : ControllerBase
         var filteredStock = userPortfolio.Where(stock => stock.Symbol.ToLower() == symbol.ToLower()).ToList();
 
         if (filteredStock.Count == 1)
-        {
             await _portfolioService.DeleteAsync(appUser, symbol);
-        }
         else
-        {
             return BadRequest("Stock not found in portfolio");
-        }
 
         return Ok();
     }

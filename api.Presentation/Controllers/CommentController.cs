@@ -1,9 +1,9 @@
-using api.Common;
-using api.Common.Extensions;
 using api.Application.Dtos.Comment;
 using api.Application.Interfaces;
-using AutoMapper;
+using api.Common;
+using api.Common.Extensions;
 using api.Core.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +15,14 @@ namespace api.Presentation.Controllers;
 [ApiController]
 public class CommentController : ControllerBase
 {
-    private readonly IMapper _mapper;
     private readonly ICommentService _commentService;
+    private readonly IMapper _mapper;
     private readonly IStockService _stockService;
     private readonly UserManager<AppUser> _userManager;
 
     public CommentController(
-        ICommentService commentService, 
-        IStockService stockService, 
+        ICommentService commentService,
+        IStockService stockService,
         UserManager<AppUser> userManager,
         IMapper mapper
     )
@@ -44,52 +44,45 @@ public class CommentController : ControllerBase
 
     [HttpGet]
     [Route("{id:int}")]
-    public async Task<IActionResult> GetById([FromRoute]int id)
+    public async Task<IActionResult> GetById([FromRoute] int id)
     {
         var comment = await _commentService.GetByIdAsync(id);
 
-        if (comment == null)
-        {
-            return NotFound();
-        }
+        if (comment == null) return NotFound();
 
         return Ok(_mapper.Map<Comment>(comment));
     }
 
     [HttpPost]
     [Route("{stockId:int}")]
-    public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentRequestDto createCommentRequestDto)
+    public async Task<IActionResult> Create([FromRoute] int stockId,
+        [FromBody] CreateCommentRequestDto createCommentRequestDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        
-        if (!await _stockService.StockExists(stockId))
-        {
-            return BadRequest("Stock does not exist");
-        }
+
+        if (!await _stockService.StockExists(stockId)) return BadRequest("Stock does not exist");
 
         var username = User.GetUsername();
         var appUser = await _userManager.FindByNameAsync(username!);
 
         var comment = _mapper.Map<Comment>(createCommentRequestDto);
 
-            comment.AppUserId = appUser!.Id;
+        comment.AppUserId = appUser!.Id;
         await _commentService.CreateAsync(comment);
-        
+
         return CreatedAtAction(nameof(GetById), new { comment.Id }, _mapper.Map<Comment>(comment));
     }
 
     [HttpPut]
     [Route("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto updateCommentRequestDto)
+    public async Task<IActionResult> Update([FromRoute] int id,
+        [FromBody] UpdateCommentRequestDto updateCommentRequestDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-        
+
         var comment = await _commentService.UpdateAsync(id, _mapper.Map<Comment>(updateCommentRequestDto));
 
-        if (comment == null)
-        {
-            return NotFound("Comment not found");
-        }
+        if (comment == null) return NotFound("Comment not found");
 
         return Ok(_mapper.Map<Comment>(comment));
     }
@@ -100,10 +93,7 @@ public class CommentController : ControllerBase
     {
         var comment = await _commentService.DeleteAsync(id);
 
-        if (comment == null)
-        {
-            return NotFound();
-        }
+        if (comment == null) return NotFound();
 
         return NoContent();
     }

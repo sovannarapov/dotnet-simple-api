@@ -1,9 +1,9 @@
-using api.Common;
-using api.Common.Helpers;
 using api.Application.Dtos.Stock;
 using api.Application.Interfaces;
-using AutoMapper;
+using api.Common;
+using api.Common.Helpers;
 using api.Core.Entities;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +29,7 @@ public class StockController : ControllerBase
         var stocks = await _stockService.GetAllAsync(queryObject);
         // var stockDto = stocks.Select(s => s).ToList();
         var stockDto = _mapper.Map<List<StockDto>>(stocks);
-        
+
         return Ok(stockDto);
     }
 
@@ -47,23 +47,23 @@ public class StockController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-    
+
         var stock = _mapper.Map<Stock>(stockDto);
-    
+
         await _stockService.CreateAsync(stock);
-    
+
         return CreatedAtAction(nameof(GetById), new { stock.Id }, stock);
     }
-    
+
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
-    
+
         var stock = await _stockService.UpdateAsync(id, updateDto);
-    
+
         if (stock == null) return NotFound();
-    
+
         return Ok(stock);
     }
 
