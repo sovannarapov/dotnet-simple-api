@@ -25,6 +25,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\api.Presentation\api.Presentation.csproj" />
       <ProjectReference Include="..\src\api.Core\api.Core.csproj" />
       <ProjectReference Include="..\src\api.Application\api.Application.csproj" />
       <ProjectReference Include="..\src\api.Presentation\api.Presentation.csproj" />
