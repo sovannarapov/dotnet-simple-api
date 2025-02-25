@@ -31,15 +31,14 @@ public class StockRepository : IStockRepository
 
         if (!string.IsNullOrWhiteSpace(queryObject.SortBy))
             stocks = queryObject.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase)
-                ? queryObject.IsDescending
-                    ? stocks.OrderByDescending(stock => stock.Symbol)
+                ? queryObject.IsDescending ? stocks.OrderByDescending(stock => stock.Symbol)
                     : stocks.OrderBy(stock => stock.Symbol)
                 : stocks;
 
         var skip = (queryObject.PageNumber - 1) * queryObject.PageSize;
         var take = queryObject.PageSize;
 
-        return await stocks.AsNoTracking().OrderBy(stock => stock.Id).Skip(skip).Take(take).ToListAsync();
+        return await stocks.AsNoTracking().Skip(skip).Take(take).ToListAsync();
     }
 
     public async Task<Stock?> GetByIdAsync(int id)
