@@ -1,9 +1,11 @@
 using api.Application.Dtos.Stock;
+using api.Application.Features.CreateStock;
+using api.Application.Features.GetStock;
 using api.Application.Interfaces;
 using api.Common;
 using api.Common.Helpers;
-using api.Core.Entities;
 using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,21 +18,30 @@ public class StockController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IStockService _stockService;
+    private readonly IMediator _mediator;
 
-    public StockController(IStockService stockService, IMapper mapper)
+    public StockController(IStockService stockService, IMapper mapper, IMediator mediator)
     {
         _stockService = stockService;
         _mapper = mapper;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] QueryObject queryObject)
     {
-        var stocks = await _stockService.GetAllAsync(queryObject);
-        // var stockDto = stocks.Select(s => s).ToList();
-        var stockDto = _mapper.Map<List<StockDto>>(stocks);
+        try
+        {
+            var query = new GetStockQuery(queryObject);
+            var result = await _mediator.Send(query);
 
-        return Ok(stockDto);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     [HttpGet("{id:int}")]
@@ -44,19 +55,24 @@ public class StockController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
+    public async Task<IActionResult> Create([FromBody] CreateStockDto createStockDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var stock = _mapper.Map<Stock>(stockDto);
-
-        await _stockService.CreateAsync(stock);
-
-        return CreatedAtAction(nameof(GetById), new { stock.Id }, stock);
+        try
+        {
+            var command = new CreateStockCommand(createStockDto);
+            var result = await _mediator.Send(command);
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockDto updateDto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
