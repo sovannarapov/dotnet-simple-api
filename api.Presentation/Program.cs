@@ -1,4 +1,5 @@
 using System.Text;
+using api.Application.Features.CreateStock;
 using api.Application.Interfaces;
 using api.Application.Mappers;
 using api.Application.Services;
@@ -30,6 +31,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(StockMappers));
+builder.Services.AddMediatR(service =>
+{
+    service.RegisterServicesFromAssembly(typeof(CreateStockCommandHandler).Assembly);
+});
 
 builder.Services.AddSwaggerGen(option =>
 {
