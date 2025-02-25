@@ -11,5 +11,4 @@ public class StockDto
     public decimal LastDiv { get; set; }
     public string Industry { get; set; } = "";
     public long MarketCap { get; set; }
-    public List<CommentDto> Comments { get; set; } = [];
 }
