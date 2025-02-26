@@ -46,7 +46,7 @@ public class StockService : IStockService
         return _mapper.Map<StockDto>(createdStock);
     }
 
-    public async Task<StockDto?> UpdateAsync(int id, UpdateStockRequestDto updateStockRequestDto)
+    public async Task<StockDto?> UpdateAsync(int id, UpdateStockDto updateStockRequestDto)
     {
         var stockToUpdate = _mapper.Map<Stock>(updateStockRequestDto);
         var updatedStock = await _stockRepository.UpdateAsync(id, stockToUpdate);

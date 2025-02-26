@@ -77,7 +77,7 @@ public class StockControllerTests
     public async Task CreateStock_ReturnsCreatedAtAction_WhenValidRequest()
     {
         // Arrange
-        var newStockRequest = new CreateStockRequestDto { CompanyName = "MSFT", Purchase = 310 };
+        var newStockRequest = new CreateStockDto { CompanyName = "MSFT", Purchase = 310 };
         var createdStock = new StockDto { Id = 3, CompanyName = "MSFT", Purchase = 310 };
 
         _mockStockService.Setup(service => service.CreateAsync(It.IsAny<Stock>())).ReturnsAsync(createdStock);
@@ -88,7 +88,7 @@ public class StockControllerTests
         // Assert
         result.StatusCode.Should().Be(StatusCodes.Status201Created);
         result.Should().NotBeNull();
-        var returnValue = result.Value.Should().BeOfType<StockWithoutCommentsDto>().Subject;
+        var returnValue = result.Value.Should().BeOfType<StockDto>().Subject;
         returnValue.CompanyName.Should().Be("MSFT");
     }
 
@@ -96,11 +96,11 @@ public class StockControllerTests
     public async Task UpdateStock_ReturnsStock_WhenSuccessful()
     {
         // Arrange
-        var updateRequest = A.Fake<UpdateStockRequestDto>();
+        var updateRequest = A.Fake<UpdateStockDto>();
         var existingStock = A.Fake<StockDto>();
 
         _mockStockService.Setup(service => service.GetByIdAsync(1)).ReturnsAsync(existingStock);
-        _mockStockService.Setup(service => service.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateStockRequestDto>()))
+        _mockStockService.Setup(service => service.UpdateAsync(It.IsAny<int>(), It.IsAny<UpdateStockDto>()))
             .ReturnsAsync(existingStock);
 
         // Act
