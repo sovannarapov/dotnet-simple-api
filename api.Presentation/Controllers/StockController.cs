@@ -1,6 +1,9 @@
 using api.Application.Dtos.Stock;
 using api.Application.Features.CreateStock;
+using api.Application.Features.DeleteStock;
 using api.Application.Features.GetStock;
+using api.Application.Features.GetStockById;
+using api.Application.Features.UpdateStock;
 using api.Application.Interfaces;
 using api.Common;
 using api.Common.Helpers;
@@ -47,11 +50,18 @@ public class StockController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var stock = await _stockService.GetByIdAsync(id);
+        try
+        {
+            var query = new GetStockByIdQuery(id);
+            var result = await _mediator.Send(query);
 
-        if (stock == null) return NotFound();
-
-        return Ok(stock);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     [HttpPost]
@@ -74,22 +84,34 @@ public class StockController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockDto updateDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        try
+        {
+            var command = new UpdateStockCommand(id, updateDto);
+            var result = await _mediator.Send(command);
 
-        var stock = await _stockService.UpdateAsync(id, updateDto);
-
-        if (stock == null) return NotFound();
-
-        return Ok(stock);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        var stockModel = await _stockService.DeleteAsync(id);
+        try
+        {
+            var command = new DeleteStockCommand(id);
+            await _mediator.Send(command);
 
-        if (stockModel == null) return NotFound();
-
-        return NoContent();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 }
