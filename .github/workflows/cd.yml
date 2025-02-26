@@ -44,7 +44,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
           
       - name: Build and tag Docker image
-        run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME:v$IMAGE_TAG
+        run: docker build api.Presentation -t ${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME:v$IMAGE_TAG
 
       - name: Push Docker image 🚀
         run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/$IMAGE_NAME:v$IMAGE_TAG
