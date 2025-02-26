@@ -27,6 +27,9 @@ jobs:
 
       - name: Restore dependencies 👨🏻‍💻
         run: dotnet restore
+        
+      - name: Clean 🧹
+        run: dotnet clean api.Presentation
 
       - name: Build 🔨
         run: dotnet build api.Presentation --no-restore
