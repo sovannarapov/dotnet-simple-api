@@ -24,6 +24,9 @@ jobs:
       - name: Restore dependencies 👨🏻‍💻
         run: dotnet restore
         
+      - name: Remove obj and bin folders 🗑
+        run: find . -type d -name 'obj' -o -name 'bin' | xargs rm -rf
+        
       - name: Clean 🧹
         run: dotnet clean api.Presentation
 
