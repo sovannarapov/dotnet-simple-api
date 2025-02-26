@@ -31,7 +31,7 @@ jobs:
         run: dotnet clean api.Presentation
 
       - name: Build 🔨
-        run: dotnet build api.Presentation --no-restore
+        run: dotnet build api.Presentation
 
 #      - name: Test 🧪
 #        run: dotnet test --no-build --verbosity normal

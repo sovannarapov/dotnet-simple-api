@@ -35,7 +35,7 @@ jobs:
         run: dotnet clean api.Presentation
 
       - name: Build 🔨
-        run: dotnet build api.Presentation --no-restore
+        run: dotnet build api.Presentation
         
       - name: Login to Dockerhub 🐳
         uses: docker/login-action@v3
