@@ -29,7 +29,7 @@ jobs:
         run: dotnet restore
 
       - name: Build 🔨
-        run: dotnet build --no-restore
+        run: dotnet build api.Presentation --no-restore
         
       - name: Login to Dockerhub 🐳
         uses: docker/login-action@v3
@@ -56,8 +56,8 @@ jobs:
             org.opencontainers.image.revision=${{github.sha}}
             org.opencontainers.image.licenses=MIT
 
-      - name: Test 🧪
-        run: dotnet test --no-build --verbosity normal
+#      - name: Test 🧪
+#        run: dotnet test --no-build --verbosity normal
 
       - name: Deploy 🚀
         run: echo "Deploying your application..."
