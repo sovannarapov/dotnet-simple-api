@@ -12,6 +12,7 @@ COPY ["api.Application/api.Application.csproj", "api.Application/"]
 COPY ["api.Common/api.Common.csproj", "api.Common/"]
 COPY ["api.Core/api.Core.csproj", "api.Core/"]
 COPY ["api.Infrastructure/api.Infrastructure.csproj", "api.Infrastructure/"]
+
 RUN dotnet restore "./api.Presentation/api.Presentation.csproj"
 COPY . .
 WORKDIR "/src/api.Presentation"
