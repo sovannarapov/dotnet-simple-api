@@ -1,5 +1,5 @@
 using MediatR;
 
-namespace api.Application.Features.DeleteStock;
+namespace api.Application.Stocks.Commands.DeleteStock;
 
 public record DeleteStockCommand(int Id) : IRequest;

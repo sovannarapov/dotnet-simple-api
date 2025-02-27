@@ -4,7 +4,7 @@ using api.Core.Interfaces;
 using AutoMapper;
 using MediatR;
 
-namespace api.Application.Features.UpdateStock;
+namespace api.Application.Stocks.Commands.UpdateStock;
 
 public class UpdateStockCommandHandler : IRequestHandler<UpdateStockCommand, StockDto>
 {

@@ -1,7 +1,7 @@
 using api.Core.Interfaces;
 using MediatR;
 
-namespace api.Application.Features.DeleteStock;
+namespace api.Application.Stocks.Commands.DeleteStock;
 
 public class DeleteStockCommandHandler : IRequestHandler<DeleteStockCommand>
 {

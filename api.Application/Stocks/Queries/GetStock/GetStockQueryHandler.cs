@@ -3,7 +3,7 @@ using api.Core.Interfaces;
 using AutoMapper;
 using MediatR;
 
-namespace api.Application.Features.GetStock;
+namespace api.Application.Stocks.Queries.GetStock;
 
 public class GetStockQueryHandler : IRequestHandler<GetStockQuery, List<StockDto>>
 {

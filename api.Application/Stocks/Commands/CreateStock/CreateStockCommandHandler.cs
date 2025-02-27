@@ -4,7 +4,7 @@ using api.Core.Interfaces;
 using AutoMapper;
 using MediatR;
 
-namespace api.Application.Features.CreateStock;
+namespace api.Application.Stocks.Commands.CreateStock;
 
 public class CreateStockCommandHandler : IRequestHandler<CreateStockCommand, StockDto>
 {
