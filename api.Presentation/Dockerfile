@@ -7,11 +7,12 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
+COPY ["api.Presentation/api.Presentation.csproj", "api.Presentation/"]
 COPY ["api.Application/api.Application.csproj", "api.Application/"]
 COPY ["api.Common/api.Common.csproj", "api.Common/"]
 COPY ["api.Core/api.Core.csproj", "api.Core/"]
 COPY ["api.Infrastructure/api.Infrastructure.csproj", "api.Infrastructure/"]
-COPY ["api.Presentation/api.Presentation.csproj", "api.Presentation/"]
+COPY ["api.Tests/api.Tests.csproj", "api.Tests/"]
 RUN dotnet restore "./api.Presentation/api.Presentation.csproj"
 COPY . .
 WORKDIR "/src/api.Presentation"
