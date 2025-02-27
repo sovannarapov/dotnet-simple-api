@@ -1,9 +1,9 @@
 using api.Application.Dtos.Stock;
-using api.Application.Features.CreateStock;
-using api.Application.Features.DeleteStock;
-using api.Application.Features.GetStock;
-using api.Application.Features.GetStockById;
-using api.Application.Features.UpdateStock;
+using api.Application.Stocks.Commands.CreateStock;
+using api.Application.Stocks.Commands.DeleteStock;
+using api.Application.Stocks.Queries.GetStock;
+using api.Application.Stocks.Queries.GetStockById;
+using api.Application.Stocks.Commands.UpdateStock;
 using api.Application.Interfaces;
 using api.Common;
 using api.Common.Helpers;
