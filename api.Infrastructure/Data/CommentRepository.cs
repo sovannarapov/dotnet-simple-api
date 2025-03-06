@@ -1,10 +1,10 @@
 using api.Core.Entities;
-using api.Core.Interfaces;
+using api.Core.Interfaces.IComment;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Infrastructure.Data;
 
-public class CommentRepository : ICommentRepository
+public class CommentRepository : ICommentReadRepository, ICommentWriteRepository
 {
     private readonly ApplicationDbContext _context;
 
@@ -13,71 +13,37 @@ public class CommentRepository : ICommentRepository
         _context = context;
     }
 
-    public async Task<Comment> CreateAsync(Comment comment)
-    {
-        await _context.Comments.AddAsync(comment);
-        await _context.SaveChangesAsync();
-
-        return comment;
-    }
-
-    public async Task<Comment?> DeleteAsync(int id)
-    {
-        /*
-         * FirstOrDefaultAsync is used to retrieve the first entity that matches a specified condition
-         * returns null if no matching entity is found
-         */
-        var comment = await _context.Comments.FirstOrDefaultAsync(comment => comment.Id == id);
-
-        if (comment == null)
-        {
-            return null;
-        }
-
-        _context.Comments.Remove(comment);
-
-        await _context.SaveChangesAsync();
-
-        return comment;
-    }
-
     public async Task<List<Comment>> GetAllAsync()
     {
-        return await _context
-            .Comments
-            .Include(comment => comment.AppUser)
-            .Include(comment => comment.Stock)
+        return await _context.Comments
+            .AsNoTracking()
+            .Include(cmt => cmt.AppUser)
+            .Include(cmt => cmt.Stock)
             .ToListAsync();
     }
 
     public async Task<Comment?> GetByIdAsync(int id)
     {
-        return await _context
-            .Comments
-            .Include(comment => comment.AppUser)
+        return await _context.Comments
+            .AsNoTracking()
+            .Include(cmt => cmt.AppUser)
             .FirstOrDefaultAsync(comment => comment.Id == id);
     }
 
-    public async Task<Comment?> UpdateAsync(int id, Comment comment)
+    public async Task CreateAsync(Comment comment)
     {
-        /*
-         * FindAsync() is specifically designed to look up an entity by its primary key
-         * returning null if no entity is found with that key
-         */
-        var existingComment = await _context.Comments
-            .Include(cmt => cmt.AppUser)
-            .FirstOrDefaultAsync(cmt => cmt.Id == id);
-
-        if (existingComment == null)
-        {
-            return null;
-        }
-
-        existingComment.Title = comment.Title;
-        existingComment.Content = comment.Content;
-
+        _context.Comments.Add(comment);
         await _context.SaveChangesAsync();
+    }
 
-        return existingComment;
+    public async Task UpdateAsync(Comment comment)
+    {
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(Comment comment)
+    {
+        _context.Comments.Remove(comment);
+        await _context.SaveChangesAsync();
     }
 }
