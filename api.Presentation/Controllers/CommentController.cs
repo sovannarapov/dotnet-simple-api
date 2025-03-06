@@ -1,11 +1,13 @@
+using api.Application.Comments.Commands.CreateComment;
+using api.Application.Comments.Commands.DeleteComment;
+using api.Application.Comments.Commands.UpdateComment;
+using api.Application.Comments.Queries.GetComment;
+using api.Application.Comments.Queries.GetCommentById;
 using api.Application.Dtos.Comment;
-using api.Application.Interfaces;
 using api.Common;
 using api.Common.Extensions;
-using api.Core.Entities;
-using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Presentation.Controllers;
@@ -15,62 +17,68 @@ namespace api.Presentation.Controllers;
 [ApiController]
 public class CommentController : ControllerBase
 {
-    private readonly ICommentService _commentService;
-    private readonly IMapper _mapper;
-    private readonly IStockService _stockService;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly IMediator _mediator;
 
-    public CommentController(
-        ICommentService commentService,
-        IStockService stockService,
-        UserManager<AppUser> userManager,
-        IMapper mapper
-    )
+    public CommentController(IMediator mediator)
     {
-        _commentService = commentService;
-        _stockService = stockService;
-        _userManager = userManager;
-        _mapper = mapper;
+        _mediator = mediator;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var comments = await _commentService.GetAllAsync();
-        var commentDto = comments.Select(cmt => _mapper.Map<Comment>(comments)).ToList();
+        try
+        {
+            var query = new GetCommentQuery();
+            var result = await _mediator.Send(query);
 
-        return Ok(commentDto);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     [HttpGet]
     [Route("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var comment = await _commentService.GetByIdAsync(id);
+        try
+        {
+            var query = new GetCommentByIdQuery(id);
+            var result = await _mediator.Send(query);
 
-        if (comment == null) return NotFound();
-
-        return Ok(_mapper.Map<Comment>(comment));
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpPost]
-    [Route("{stockId:int}")]
-    public async Task<IActionResult> Create([FromRoute] int stockId,
+    public async Task<IActionResult> Create([FromQuery] int stockId,
         [FromBody] CreateCommentRequestDto createCommentRequestDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        try
+        {
+            var username = User.GetUsername();
 
-        if (!await _stockService.StockExists(stockId)) return BadRequest("Stock does not exist");
+            if (username is null) return Unauthorized("User is not authenticated");
 
-        var username = User.GetUsername();
-        var appUser = await _userManager.FindByNameAsync(username!);
+            var command = new CreateCommentCommand(stockId, createCommentRequestDto, username);
+            var result = await _mediator.Send(command);
 
-        var comment = _mapper.Map<Comment>(createCommentRequestDto);
-
-        comment.AppUserId = appUser!.Id;
-        await _commentService.CreateAsync(comment);
-
-        return CreatedAtAction(nameof(GetById), new { comment.Id }, _mapper.Map<Comment>(comment));
+            return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return StatusCode(500, "Internal server error.");
+        }
     }
 
     [HttpPut]
@@ -78,23 +86,35 @@ public class CommentController : ControllerBase
     public async Task<IActionResult> Update([FromRoute] int id,
         [FromBody] UpdateCommentRequestDto updateCommentRequestDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        try
+        {
+            var command = new UpdateCommentCommand(id, updateCommentRequestDto);
+            var result = await _mediator.Send(command);
 
-        var comment = await _commentService.UpdateAsync(id, _mapper.Map<Comment>(updateCommentRequestDto));
-
-        if (comment == null) return NotFound("Comment not found");
-
-        return Ok(_mapper.Map<Comment>(comment));
+            return Ok(result);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return NotFound(ex.Message);
+        }
     }
 
     [HttpDelete]
     [Route("{id:int}")]
     public async Task<IActionResult> Delete([FromRoute] int id)
     {
-        var comment = await _commentService.DeleteAsync(id);
+        try
+        {
+            var command = new DeleteCommentCommand(id);
+            await _mediator.Send(command);
 
-        if (comment == null) return NotFound();
-
-        return NoContent();
+            return Ok("Comment deleted successfully.");
+        }
+        catch (KeyNotFoundException ex)
+        {
+            Console.WriteLine("ERROR >>> " + ex.Message);
+            return NotFound(ex.Message);
+        }
     }
 }
