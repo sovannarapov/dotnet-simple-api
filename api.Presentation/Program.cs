@@ -5,6 +5,7 @@ using api.Application.Mappers;
 using api.Application.Services;
 using api.Core.Entities;
 using api.Core.Interfaces;
+using api.Core.Interfaces.IComment;
 using api.Infrastructure.Data;
 using api.Infrastructure.Middleware;
 using Asp.Versioning;
@@ -117,11 +118,11 @@ builder.Services.AddApiVersioning(options =>
     });
 
 builder.Services.AddScoped<IStockService, StockService>();
-builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
-builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ICommentWriteRepository, CommentRepository>();
+builder.Services.AddScoped<ICommentReadRepository, CommentRepository>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
 var app = builder.Build();
