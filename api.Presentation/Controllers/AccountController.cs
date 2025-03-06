@@ -1,10 +1,9 @@
 using api.Application.Dtos.Account;
-using api.Application.Interfaces;
+using api.Application.Features.Accounts.Commands.AccountLogin;
+using api.Application.Features.Accounts.Commands.AccountRegister;
 using api.Common;
-using api.Core.Entities;
-using Microsoft.AspNetCore.Identity;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace api.Presentation.Controllers;
@@ -13,16 +12,11 @@ namespace api.Presentation.Controllers;
 [ApiController]
 public class AccountController : ControllerBase
 {
-    private readonly SignInManager<AppUser> _signInManager;
-    private readonly ITokenService _tokenService;
-    private readonly UserManager<AppUser> _userManager;
+    private readonly IMediator _mediator;
 
-    public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,
-        SignInManager<AppUser> signInManager)
+    public AccountController(IMediator mediator)
     {
-        _userManager = userManager;
-        _tokenService = tokenService;
-        _signInManager = signInManager;
+        _mediator = mediator;
     }
 
     [HttpPost("login")]
@@ -32,24 +26,18 @@ public class AccountController : ControllerBase
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error. An unexpected error occurred.")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
-        var user = await _userManager.Users.FirstOrDefaultAsync(
-            user => user.Email == loginRequestDto.Email.ToLower(), CancellationToken.None
-        );
-
-        if (user == null) return Unauthorized("Invalid email");
-
-        var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequestDto.Password, false);
-
-        if (!result.Succeeded) return Unauthorized("Incorrect email or password");
-
-        return Ok(new NewUserDto
+        try
         {
-            Username = user.UserName!,
-            Email = user.Email!,
-            Token = _tokenService.CreateToken(user)
-        });
+            var command = new AccountLoginCommand(loginRequestDto);
+            var result = await _mediator.Send(command);
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error >>> " + ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpPost("register")]
@@ -61,25 +49,16 @@ public class AccountController : ControllerBase
     {
         try
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var appUser = new AppUser
-            {
-                UserName = registerAccountRequestDto.Username,
-                Email = registerAccountRequestDto.Email
-            };
-
-            var createdUser = await _userManager.CreateAsync(appUser, registerAccountRequestDto.Password!);
-
-            if (!createdUser.Succeeded) return StatusCode(500, createdUser.Errors);
-
-            var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
-
-            return roleResult.Succeeded ? Ok("User successfully created") : StatusCode(500, createdUser.Errors);
+            var command = new AccountRegisterCommand(registerAccountRequestDto);
+            
+            await _mediator.Send(command);
+            
+            return Ok("User successfully created!");
         }
         catch (Exception ex)
         {
-            return StatusCode(500, ex);
+            Console.WriteLine("Error >>> " + ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
 }
