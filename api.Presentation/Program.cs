@@ -1,5 +1,5 @@
 using System.Text;
-using api.Application.Stocks.Commands.CreateStock;
+using api.Application.Features.Stocks.Commands.CreateStock;
 using api.Application.Interfaces;
 using api.Application.Mappers;
 using api.Application.Services;

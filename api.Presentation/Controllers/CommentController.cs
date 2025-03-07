@@ -1,9 +1,9 @@
-using api.Application.Comments.Commands.CreateComment;
-using api.Application.Comments.Commands.DeleteComment;
-using api.Application.Comments.Commands.UpdateComment;
-using api.Application.Comments.Queries.GetComment;
-using api.Application.Comments.Queries.GetCommentById;
 using api.Application.Dtos.Comment;
+using api.Application.Features.Comments.Commands.CreateComment;
+using api.Application.Features.Comments.Commands.DeleteComment;
+using api.Application.Features.Comments.Commands.UpdateComment;
+using api.Application.Features.Comments.Queries.GetComment;
+using api.Application.Features.Comments.Queries.GetCommentById;
 using api.Common;
 using api.Common.Extensions;
 using MediatR;
