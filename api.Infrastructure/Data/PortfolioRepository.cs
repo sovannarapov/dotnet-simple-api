@@ -1,13 +1,13 @@
 using api.Core.Entities;
-using api.Core.Interfaces;
+using api.Core.Interfaces.IPortfolio;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Infrastructure.Data;
 
-public class PortfolioRepository : IPortfolioRepository
+public class PortfolioRepository : IPortfolioWriteRepository, IPortfolioReadRepository
 {
     private readonly ApplicationDbContext _context;
-    
+
     public PortfolioRepository(ApplicationDbContext context)
     {
         _context = context;
@@ -31,22 +31,22 @@ public class PortfolioRepository : IPortfolioRepository
     {
         await _context.Portfolios.AddAsync(portfolio);
         await _context.SaveChangesAsync();
-        
+
         return portfolio;
     }
 
     public async Task<Portfolio> DeleteAsync(AppUser appUser, string symbol)
     {
         var portfolio = await _context.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.AppUserId == appUser.Id && portfolio.Stock.Symbol == symbol);
-        
+
         if (portfolio == null)
         {
             return null;
         }
-        
+
         _context.Portfolios.Remove(portfolio);
         await _context.SaveChangesAsync();
-        
+
         return portfolio;
     }
 }
