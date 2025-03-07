@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using api.Core.Interfaces.IPortfolio;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -118,12 +119,12 @@ builder.Services.AddApiVersioning(options =>
     });
 
 builder.Services.AddScoped<IStockService, StockService>();
-builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentWriteRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentReadRepository, CommentRepository>();
-builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+builder.Services.AddScoped<IPortfolioWriteRepository, PortfolioRepository>();
+builder.Services.AddScoped<IPortfolioReadRepository, PortfolioRepository>();
 
 var app = builder.Build();
 
