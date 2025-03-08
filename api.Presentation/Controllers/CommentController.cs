@@ -61,7 +61,7 @@ public class CommentController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Create([FromQuery] int stockId,
-        [FromBody] CreateCommentRequestDto createCommentRequestDto)
+        [FromBody] CreateCommentRequest createCommentRequest)
     {
         try
         {
@@ -69,7 +69,7 @@ public class CommentController : ControllerBase
 
             if (username is null) return Unauthorized("User is not authenticated");
 
-            var command = new CreateCommentCommand(stockId, createCommentRequestDto, username);
+            var command = new CreateCommentCommand(stockId, createCommentRequest, username);
             var result = await _mediator.Send(command);
 
             return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
@@ -84,11 +84,11 @@ public class CommentController : ControllerBase
     [HttpPut]
     [Route("{id:int}")]
     public async Task<IActionResult> Update([FromRoute] int id,
-        [FromBody] UpdateCommentRequestDto updateCommentRequestDto)
+        [FromBody] UpdateCommentRequest updateCommentRequest)
     {
         try
         {
-            var command = new UpdateCommentCommand(id, updateCommentRequestDto);
+            var command = new UpdateCommentCommand(id, updateCommentRequest);
             var result = await _mediator.Send(command);
 
             return Ok(result);

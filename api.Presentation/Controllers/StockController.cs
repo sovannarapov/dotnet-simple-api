@@ -4,7 +4,6 @@ using api.Application.Features.Stocks.Commands.DeleteStock;
 using api.Application.Features.Stocks.Commands.UpdateStock;
 using api.Application.Features.Stocks.Queries.GetStock;
 using api.Application.Features.Stocks.Queries.GetStockById;
-using api.Application.Interfaces;
 using api.Common;
 using api.Common.Helpers;
 using AutoMapper;
@@ -20,12 +19,10 @@ namespace api.Presentation.Controllers;
 public class StockController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IStockService _stockService;
     private readonly IMediator _mediator;
 
-    public StockController(IStockService stockService, IMapper mapper, IMediator mediator)
+    public StockController(IMapper mapper, IMediator mediator)
     {
-        _stockService = stockService;
         _mapper = mapper;
         _mediator = mediator;
     }
@@ -65,13 +62,13 @@ public class StockController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateStockDto createStockDto)
+    public async Task<IActionResult> Create([FromBody] CreateStockRequest createStockRequest)
     {
         try
         {
-            var command = new CreateStockCommand(createStockDto);
+            var command = new CreateStockCommand(createStockRequest);
             var result = await _mediator.Send(command);
-            
+
             return Ok(result);
         }
         catch (Exception ex)
@@ -82,11 +79,11 @@ public class StockController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockDto updateDto)
+    public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequest updateRequest)
     {
         try
         {
-            var command = new UpdateStockCommand(id, updateDto);
+            var command = new UpdateStockCommand(id, updateRequest);
             var result = await _mediator.Send(command);
 
             return Ok(result);

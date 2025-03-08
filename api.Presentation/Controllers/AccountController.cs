@@ -20,17 +20,17 @@ public class AccountController : ControllerBase
     }
 
     [HttpPost("login")]
-    [SwaggerResponse(StatusCodes.Status200OK, "Login successful", typeof(NewUserDto))]
+    [SwaggerResponse(StatusCodes.Status200OK, "Login successful", typeof(UserDto))]
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error occurred. Check the input data.")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized access. Invalid email or password.")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error. An unexpected error occurred.")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+    public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
     {
         try
         {
-            var command = new AccountLoginCommand(loginRequestDto);
+            var command = new AccountLoginCommand(loginRequest);
             var result = await _mediator.Send(command);
-            
+
             return Ok(result);
         }
         catch (Exception ex)
@@ -45,14 +45,14 @@ public class AccountController : ControllerBase
     [SwaggerResponse(StatusCodes.Status400BadRequest, "Validation error occurred. Check the input data.")]
     [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized access. Authentication is required.")]
     [SwaggerResponse(StatusCodes.Status500InternalServerError, "Internal server error. An unexpected error occurred.")]
-    public async Task<IActionResult> Register([FromBody] RegisterAccountRequestDto registerAccountRequestDto)
+    public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
     {
         try
         {
-            var command = new AccountRegisterCommand(registerAccountRequestDto);
-            
+            var command = new AccountRegisterCommand(registerRequest);
+
             await _mediator.Send(command);
-            
+
             return Ok("User successfully created!");
         }
         catch (Exception ex)

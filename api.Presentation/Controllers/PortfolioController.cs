@@ -3,10 +3,8 @@ using api.Application.Features.Portfolios.Commands.DeletePortfolio;
 using api.Application.Features.Portfolios.Queries.GetPortfolio;
 using api.Common;
 using api.Common.Extensions;
-using api.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Presentation.Controllers;
@@ -18,10 +16,7 @@ public class PortfolioController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public PortfolioController(
-        UserManager<AppUser> userManager,
-        IMediator mediator
-    )
+    public PortfolioController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -73,7 +68,8 @@ public class PortfolioController : ControllerBase
     [HttpDelete]
     public async Task<IActionResult> DeletePortfolio(string symbol)
     {
-        try {
+        try
+        {
             var username = User.GetUsername();
 
             if (username is null) return NotFound("User not found");

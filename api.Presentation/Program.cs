@@ -1,13 +1,12 @@
 using System.Text;
-using api.Application.Features.Stocks.Commands.CreateStock;
-using api.Application.Interfaces;
 using api.Application.Mappers;
-using api.Application.Services;
 using api.Core.Entities;
-using api.Core.Interfaces;
 using api.Core.Interfaces.IComment;
+using api.Core.Interfaces.IPortfolio;
+using api.Core.Interfaces.IStock;
 using api.Infrastructure.Data;
 using api.Infrastructure.Middleware;
+using api.Presentation.Extensions;
 using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -16,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
-using api.Core.Interfaces.IPortfolio;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
@@ -33,10 +31,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(StockMappers));
-builder.Services.AddMediatR(service =>
-{
-    service.RegisterServicesFromAssembly(typeof(CreateStockCommandHandler).Assembly);
-});
+builder.Services.AddMediatRServices();
 
 builder.Services.AddSwaggerGen(option =>
 {
@@ -101,7 +96,8 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = builder.Configuration["JWT:Audience"],
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
+            Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"] ??
+                                   throw new InvalidOperationException("JWT:SigningKey"))
         )
     };
 });
@@ -118,9 +114,8 @@ builder.Services.AddApiVersioning(options =>
         options.SubstituteApiVersionInUrl = true;
     });
 
-builder.Services.AddScoped<IStockService, StockService>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<IStockWriteRepository, StockRepository>();
+builder.Services.AddScoped<IStockReadRepository, StockRepository>();
 builder.Services.AddScoped<ICommentWriteRepository, CommentRepository>();
 builder.Services.AddScoped<ICommentReadRepository, CommentRepository>();
 builder.Services.AddScoped<IPortfolioWriteRepository, PortfolioRepository>();
