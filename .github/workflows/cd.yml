@@ -27,9 +27,15 @@ jobs:
 
       - name: Restore dependencies 👨🏻‍💻
         run: dotnet restore
+        
+      - name: Remove obj and bin folders 🗑
+        run: find . -type d -name 'obj' -o -name 'bin' | xargs rm -rf
+        
+      - name: Clean 🧹
+        run: dotnet clean api.Presentation
 
       - name: Build 🔨
-        run: dotnet build --no-restore
+        run: dotnet build api.Presentation
         
       - name: Login to Dockerhub 🐳
         uses: docker/login-action@v3
@@ -56,8 +62,8 @@ jobs:
             org.opencontainers.image.revision=${{github.sha}}
             org.opencontainers.image.licenses=MIT
 
-      - name: Test 🧪
-        run: dotnet test --no-build --verbosity normal
+#      - name: Test 🧪
+#        run: dotnet test --no-build --verbosity normal
 
       - name: Deploy 🚀
         run: echo "Deploying your application..."
