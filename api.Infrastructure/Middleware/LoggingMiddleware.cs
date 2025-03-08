@@ -6,8 +6,8 @@ namespace api.Infrastructure.Middleware;
 
 public class LoggingMiddleware
 {
-    private readonly RequestDelegate _next;
     private readonly ILogger<LoggingMiddleware> _logger;
+    private readonly RequestDelegate _next;
 
     public LoggingMiddleware(RequestDelegate next, ILogger<LoggingMiddleware> logger)
     {
@@ -26,8 +26,8 @@ public class LoggingMiddleware
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Finished handling request. Status code: {StatusCode}. Time taken: {ElapsedMilliseconds} ms", 
-            context.Response.StatusCode, 
+            "Finished handling request. Status code: {StatusCode}. Time taken: {ElapsedMilliseconds} ms",
+            context.Response.StatusCode,
             stopwatch.ElapsedMilliseconds
         );
     }

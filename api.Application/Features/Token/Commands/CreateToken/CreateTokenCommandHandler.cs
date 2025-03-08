@@ -1,20 +1,17 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using api.Application.Interfaces;
-using api.Core.Entities;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace api.Application.Services;
-
-public class TokenService : ITokenService
+public class CreateTokenCommandHandler : IRequestHandler<CreateTokenCommand, string>
 {
     private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _key;
 
-    public TokenService(IConfiguration config)
+    public CreateTokenCommandHandler(IConfiguration config)
     {
         _config = config;
 
@@ -23,16 +20,15 @@ public class TokenService : ITokenService
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey));
     }
 
-
-    public string CreateToken(AppUser appUser)
+    public Task<string> Handle(CreateTokenCommand request, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(appUser.Email, nameof(appUser.Email));
-        ArgumentNullException.ThrowIfNull(appUser.UserName, nameof(appUser.UserName));
+        ArgumentNullException.ThrowIfNull(request.AppUser.Email, nameof(request.AppUser.Email));
+        ArgumentNullException.ThrowIfNull(request.AppUser.UserName, nameof(request.AppUser.UserName));
 
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Email, appUser.Email),
-            new(JwtRegisteredClaimNames.GivenName, appUser.UserName)
+            new(JwtRegisteredClaimNames.Email, request.AppUser.Email),
+            new(JwtRegisteredClaimNames.GivenName, request.AppUser.UserName)
         };
 
         var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);
@@ -49,6 +45,6 @@ public class TokenService : ITokenService
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        return tokenHandler.WriteToken(token);
+        return Task.FromResult(tokenHandler.WriteToken(token));
     }
 }

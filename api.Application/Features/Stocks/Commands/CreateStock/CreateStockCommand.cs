@@ -3,4 +3,4 @@ using MediatR;
 
 namespace api.Application.Features.Stocks.Commands.CreateStock;
 
-public record CreateStockCommand(CreateStockDto CreateStockDto) : IRequest<StockDto>;
+public record CreateStockCommand(CreateStockRequest CreateStockRequest) : IRequest<StockDto>;

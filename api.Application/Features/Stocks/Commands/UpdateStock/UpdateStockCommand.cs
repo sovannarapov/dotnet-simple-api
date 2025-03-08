@@ -3,4 +3,4 @@ using MediatR;
 
 namespace api.Application.Features.Stocks.Commands.UpdateStock;
 
-public record UpdateStockCommand(int Id, UpdateStockDto UpdateStockDto) : IRequest<StockDto>;
+public record UpdateStockCommand(int Id, UpdateStockRequest UpdateStockRequest) : IRequest<StockDto>;

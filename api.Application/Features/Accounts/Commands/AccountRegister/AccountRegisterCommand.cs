@@ -3,4 +3,4 @@ using MediatR;
 
 namespace api.Application.Features.Accounts.Commands.AccountRegister;
 
-public record AccountRegisterCommand(RegisterAccountRequestDto RegisterAccountRequestDto) : IRequest<string>;
+public record AccountRegisterCommand(RegisterRequest RegisterRequest) : IRequest<string>;

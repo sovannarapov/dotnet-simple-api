@@ -1,6 +1,7 @@
 using api.Core.Entities;
 
 namespace api.Core.Interfaces.IComment;
+
 public interface ICommentReadRepository
 {
     Task<List<Comment>> GetAllAsync();

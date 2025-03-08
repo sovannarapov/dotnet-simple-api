@@ -12,6 +12,7 @@ public class PortfolioRepository : IPortfolioWriteRepository, IPortfolioReadRepo
     {
         _context = context;
     }
+
     public async Task<List<Stock>> GetUserPortfolio(AppUser appUser)
     {
         return await _context.Portfolios.Where(u => u.AppUserId == appUser.Id)
@@ -37,12 +38,10 @@ public class PortfolioRepository : IPortfolioWriteRepository, IPortfolioReadRepo
 
     public async Task<Portfolio> DeleteAsync(AppUser appUser, string symbol)
     {
-        var portfolio = await _context.Portfolios.FirstOrDefaultAsync(portfolio => portfolio.AppUserId == appUser.Id && portfolio.Stock.Symbol == symbol);
+        var portfolio = await _context.Portfolios.FirstOrDefaultAsync(portfolio =>
+            portfolio.AppUserId == appUser.Id && portfolio.Stock.Symbol == symbol);
 
-        if (portfolio == null)
-        {
-            return null;
-        }
+        if (portfolio == null) return null;
 
         _context.Portfolios.Remove(portfolio);
         await _context.SaveChangesAsync();

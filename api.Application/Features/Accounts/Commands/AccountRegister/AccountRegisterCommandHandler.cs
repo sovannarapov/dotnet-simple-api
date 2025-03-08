@@ -17,16 +17,16 @@ public class AccountRegisterCommandHandler : IRequestHandler<AccountRegisterComm
     {
         var appUser = new AppUser
         {
-            UserName = request.RegisterAccountRequestDto.Username,
-            Email = request.RegisterAccountRequestDto.Email
+            UserName = request.RegisterRequest.Username,
+            Email = request.RegisterRequest.Email
         };
-        
-        var createdUser = await _userManager.CreateAsync(appUser, request.RegisterAccountRequestDto.Password!);
-        
+
+        var createdUser = await _userManager.CreateAsync(appUser, request.RegisterRequest.Password!);
+
         if (!createdUser.Succeeded) throw new Exception(createdUser.Errors.First().Description);
-        
+
         await _userManager.AddToRoleAsync(appUser, "User");
-        
+
         return "User successfully created!";
     }
 }

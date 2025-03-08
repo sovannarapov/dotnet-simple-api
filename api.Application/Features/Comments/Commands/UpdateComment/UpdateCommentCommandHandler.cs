@@ -8,11 +8,12 @@ namespace api.Application.Features.Comments.Commands.UpdateComment;
 
 public class UpdateCommentCommandHandler : IRequestHandler<UpdateCommentCommand, CommentDto>
 {
-    private readonly ICommentWriteRepository _commentWriteRepository;
     private readonly ICommentReadRepository _commentReadRepository;
+    private readonly ICommentWriteRepository _commentWriteRepository;
     private readonly IMapper _mapper;
 
-    public UpdateCommentCommandHandler(ICommentWriteRepository commentWriteRepository, ICommentReadRepository commentReadRepository, IMapper mapper)
+    public UpdateCommentCommandHandler(ICommentWriteRepository commentWriteRepository,
+        ICommentReadRepository commentReadRepository, IMapper mapper)
     {
         _commentWriteRepository = commentWriteRepository;
         _commentReadRepository = commentReadRepository;
@@ -27,7 +28,7 @@ public class UpdateCommentCommandHandler : IRequestHandler<UpdateCommentCommand,
 
         Console.WriteLine("existingComment >>> " + JsonSerializer.Serialize(existingComment));
 
-        _mapper.Map(request.UpdateCommentRequestDto, existingComment);
+        _mapper.Map(request.UpdateCommentRequest, existingComment);
 
         await _commentWriteRepository.UpdateAsync(existingComment);
 

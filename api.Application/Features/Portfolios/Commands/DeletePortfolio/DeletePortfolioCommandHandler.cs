@@ -7,8 +7,8 @@ namespace api.Application.Features.Portfolios.Commands.DeletePortfolio;
 
 public class DeletePortfolioCommandHandler : IRequestHandler<DeletePortfolioCommand, string>
 {
-    private readonly IPortfolioWriteRepository _portfolioRepository;
     private readonly IPortfolioReadRepository _portfolioReadRepository;
+    private readonly IPortfolioWriteRepository _portfolioRepository;
     private readonly UserManager<AppUser> _userManager;
 
     public DeletePortfolioCommandHandler(
@@ -23,10 +23,12 @@ public class DeletePortfolioCommandHandler : IRequestHandler<DeletePortfolioComm
 
     public async Task<string> Handle(DeletePortfolioCommand request, CancellationToken cancellationToken)
     {
-        var appUser = await _userManager.FindByNameAsync(request.Username) ?? throw new KeyNotFoundException("User not found");
+        var appUser = await _userManager.FindByNameAsync(request.Username) ??
+                      throw new KeyNotFoundException("User not found");
         var userPortfolio = await _portfolioReadRepository.GetUserPortfolio(appUser);
 
-        var filteredStock = userPortfolio.Where(stock => string.Equals(stock.Symbol.ToLower(), request.Symbol.ToLower())).ToList();
+        var filteredStock = userPortfolio
+            .Where(stock => string.Equals(stock.Symbol.ToLower(), request.Symbol.ToLower())).ToList();
 
         if (filteredStock.Count == 1)
             await _portfolioRepository.DeleteAsync(appUser, request.Symbol);

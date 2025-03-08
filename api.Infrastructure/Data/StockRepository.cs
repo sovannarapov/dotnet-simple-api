@@ -1,11 +1,11 @@
 using api.Common.Helpers;
 using api.Core.Entities;
-using api.Core.Interfaces;
+using api.Core.Interfaces.IStock;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Infrastructure.Data;
 
-public class StockRepository : IStockRepository
+public class StockRepository : IStockWriteRepository, IStockReadRepository
 {
     private readonly ApplicationDbContext _context;
 
@@ -31,7 +31,8 @@ public class StockRepository : IStockRepository
 
         if (!string.IsNullOrWhiteSpace(queryObject.SortBy))
             stocks = queryObject.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase)
-                ? queryObject.IsDescending ? stocks.OrderByDescending(stock => stock.Symbol)
+                ? queryObject.IsDescending
+                    ? stocks.OrderByDescending(stock => stock.Symbol)
                     : stocks.OrderBy(stock => stock.Symbol)
                 : stocks;
 

@@ -3,4 +3,4 @@ using MediatR;
 
 namespace api.Application.Features.Accounts.Commands.AccountLogin;
 
-public record AccountLoginCommand(LoginRequestDto LoginRequestDto) : IRequest<NewUserDto>;
+public record AccountLoginCommand(LoginRequest LoginRequest) : IRequest<UserDto>;

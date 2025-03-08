@@ -1,6 +1,6 @@
-using api.Application.Interfaces;
 using api.Core.Entities;
 using api.Core.Interfaces.IPortfolio;
+using api.Core.Interfaces.IStock;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -9,19 +9,19 @@ namespace api.Application.Features.Portfolios.Commands.CreatePortfolio;
 
 public class CreatePortfolioCommandHandler : IRequestHandler<CreatePortfolioCommand, Portfolio>
 {
-    private readonly IPortfolioWriteRepository _portfolioRepository;
     private readonly IPortfolioReadRepository _portfolioReadRepository;
-    private readonly IStockService _stockService;
+    private readonly IPortfolioWriteRepository _portfolioRepository;
+    private readonly IStockReadRepository _stockRepository;
     private readonly UserManager<AppUser> _userManager;
 
     public CreatePortfolioCommandHandler(
-        IStockService stockService,
+        IStockReadRepository stockRepository,
         IPortfolioWriteRepository portfolioRepository,
         IPortfolioReadRepository portfolioReadRepository,
         UserManager<AppUser> userManager
     )
     {
-        _stockService = stockService;
+        _stockRepository = stockRepository;
         _portfolioRepository = portfolioRepository;
         _portfolioReadRepository = portfolioReadRepository;
         _userManager = userManager;
@@ -29,8 +29,10 @@ public class CreatePortfolioCommandHandler : IRequestHandler<CreatePortfolioComm
 
     public async Task<Portfolio> Handle(CreatePortfolioCommand request, CancellationToken cancellationToken)
     {
-        var appUser = await _userManager.FindByNameAsync(request.Username) ?? throw new BadHttpRequestException("User does not exist");
-        var stock = await _stockService.GetBySymbolAsync(request.Symbol) ?? throw new KeyNotFoundException("Stock not found");
+        var appUser = await _userManager.FindByNameAsync(request.Username) ??
+                      throw new BadHttpRequestException("User does not exist");
+        var stock = await _stockRepository.GetBySymbolAsync(request.Symbol) ??
+                    throw new KeyNotFoundException("Stock not found");
 
         var userPortfolio = await _portfolioReadRepository.GetUserPortfolio(appUser);
 

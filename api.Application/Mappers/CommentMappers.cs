@@ -9,7 +9,7 @@ public class CommentMappers : Profile
     public CommentMappers()
     {
         CreateMap<Comment, CommentDto>().ReverseMap();
-        CreateMap<Comment, CreateCommentRequestDto>().ReverseMap();
-        CreateMap<Comment, UpdateCommentRequestDto>().ReverseMap();
+        CreateMap<Comment, CreateCommentRequest>().ReverseMap();
+        CreateMap<Comment, UpdateCommentRequest>().ReverseMap();
     }
 }
