@@ -27,6 +27,7 @@ Dotnet Simple API is a web application built with ASP.NET Core that provides end
 - Microsoft SQL Server
 - JWT Authentication
 - Swagger
+- xUnit
 
 ## Getting Started
 
